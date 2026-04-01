@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv
+
+# Node
+node_modules/
+dist/
+.vite
+npm-debug.log
+yarn-error.log
+
+# Large model files (GitHub has 100MB file limit)
+*.pkl
+random_forest.pkl
+area_encoder.pkl
+element_encoder.pkl
+model.pkl
+label_encoder.pkl
+scaler.pkl
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Misc
+.env
+.env.local
