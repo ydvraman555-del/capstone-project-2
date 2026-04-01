@@ -1,0 +1,38 @@
+from sklearn.linear_model import LinearRegression,Lasso,Ridge,ElasticNet
+from sklearn.ensemble import RandomForestRegressor,GradientBoostingRegressor
+from xgboost import XGBRegressor
+from sklearn.model_selection import train_test_split, GridSearchCV,RandomizedSearchCV
+from sklearn.metrics import r2_score,mean_absolute_error,mean_squared_error,root_mean_squared_error
+from sklearn.preprocessing import OneHotEncoder, LabelEncoder, StandardScaler,MinMaxScaler
+--------------------------------------------------
+x = df.drop(columns=['Value'])
+y =df['Value']
+--------------------------------------------------
+x_train,x_test,y_train,y_test = train_test_split(x,y, test_size=0.2, random_state=42)
+--------------------------------------------------
+from sklearn.ensemble import RandomForestRegressor
+rf = RandomForestRegressor(random_state=42)
+rf.fit(x_train, y_train)
+--------------------------------------------------
+X = df_pivot[["CH4", "CO2", "N2O"]]
+y = df_pivot["Dominant_Gas"]
+--------------------------------------------------
+from sklearn.preprocessing import LabelEncoder
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+
+le = LabelEncoder()
+y_encoded = le.fit_transform(y)
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y_encoded, test_size=0.2, random_state=42
+)
+
+clf = RandomForestClassifier(
+    n_estimators=200,
+    random_state=42
+)
+
+clf.fit(X_train, y_train)
+y_pred = clf.predict(X_test)
+--------------------------------------------------

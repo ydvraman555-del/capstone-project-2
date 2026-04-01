@@ -1,0 +1,11 @@
+import pickle
+
+pickle.dump(rf, open("random_forest.pkl", "wb"))
+pickle.dump(area_encoder, open("area_encoder.pkl", "wb"))
+pickle.dump(element_encoder, open("element_encoder.pkl", "wb"))
+--------------------------------------------------
+import pickle
+
+pickle.dump(clf, open("dominant_gas_classifier.pkl", "wb"))
+pickle.dump(le, open("dominant_gas_label_encoder.pkl", "wb"))
+--------------------------------------------------

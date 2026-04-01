@@ -1,0 +1,40 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-[#030914] text-slate-300 font-sans;
+    font-family: 'Outfit', sans-serif;
+  }
+}
+
+/* Custom Scrollbar for Science Briefing */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(16, 185, 129, 0.2);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(16, 185, 129, 0.4);
+}
+
+/* Glassmorphism Design Tokens */
+@layer components {
+  .glass {
+    @apply bg-white/[0.03] backdrop-blur-3xl border border-white/5;
+  }
+}
+
+@layer utilities {
+  .glass-card {
+    @apply bg-[#081223] border border-sky-900/30 backdrop-blur-md rounded-[30px] shadow-2xl;
+  }
+}
