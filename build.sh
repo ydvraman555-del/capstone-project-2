@@ -8,15 +8,15 @@ BASEDIR="$(cd "$(dirname "$0")" && pwd)"
 cd "$BASEDIR"
 
 # Build frontend
-echo ">> Building frontend with npx..."
+echo ">> Building frontend with Node directly..."
 cd "$BASEDIR/frontend"
 npm install
-npx vite build
+node node_modules/vite/bin/vite.js build
 cd "$BASEDIR"
 
-# Install Python dependencies from the root requirements.txt
+# Install Python dependencies from root requirements.txt
 echo ">> Installing Python dependencies from root..."
 python -m pip install --upgrade pip setuptools wheel
 pip install -r "$BASEDIR/requirements.txt"
 
-echo ">> Build complete! Everything is standardized."
+echo ">> Build complete! Ready for Render."
