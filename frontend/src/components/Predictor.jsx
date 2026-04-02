@@ -101,7 +101,7 @@ const Predictor = () => {
     setLoading(true);
     try {
       const response = await axios.post(`${API_URL}/predict`, formData);
-      setPrediction(response.data);
+      setPrediction({ ...response.data, year: formData.Year, area: formData.Area, element: formData.Element });
       fetchForecast(formData.Area, formData.Element);
 
       const newEntry = {
@@ -298,7 +298,8 @@ const Predictor = () => {
   let peakEmission = "---";
   let peakYear = "---";
   let avgHistorical = "---";
-  let trend2031 = "---";
+  let trendVariable = "---";
+
   const elLabel = formData.Element ? formData.Element.split('(')[1]?.replace(')', '') || formData.Element : "CO₂e";
   const formatGas = (gas) => {
     if (!gas) return "CO₂e";
@@ -310,6 +311,9 @@ const Predictor = () => {
   };
   const formattedGas = formatGas(elLabel);
 
+  let isFreshPrediction = prediction && prediction.year === formData.Year && prediction.area === formData.Area && prediction.element === formData.Element;
+  let trendLabel = isFreshPrediction ? `${formData.Year} Trend` : "2031 Outlook";
+
   if (forecastData.history && forecastData.history.length > 0) {
       const maxObj = forecastData.history.reduce((max, obj) => (parseFloat(obj.Value) > parseFloat(max.Value) ? obj : max), forecastData.history[0]);
       peakEmission = Math.round(maxObj.Value).toLocaleString();
@@ -317,16 +321,16 @@ const Predictor = () => {
 
       const totalHist = forecastData.history.reduce((sum, obj) => sum + parseFloat(obj.Value), 0);
       avgHistorical = Math.round(totalHist / forecastData.history.length).toLocaleString();
-  }
 
-  if (forecastData.history && forecastData.history.length > 0) {
       const lastHist = parseFloat(forecastData.history[forecastData.history.length - 1].Value);
-      // Use the actual prediction for the selected year if available, otherwise fallback to 2031 forecast
-      const targetVal = prediction ? prediction.prediction : (forecastData.forecast.length > 0 ? parseFloat(forecastData.forecast[forecastData.forecast.length - 1].Value) : 0);
+      // Use the actual prediction if it matches the current form, otherwise use the 2031 forecast
+      const targetVal = isFreshPrediction 
+          ? prediction.prediction 
+          : (forecastData.forecast.length > 0 ? parseFloat(forecastData.forecast[forecastData.forecast.length - 1].Value) : 0);
       
       if (lastHist > 0) {
           const percentChange = ((targetVal - lastHist) / lastHist) * 100;
-          trend2031 = (percentChange > 0 ? "+" : "") + percentChange.toFixed(1) + "%";
+          trendVariable = (percentChange > 0 ? "+" : "") + percentChange.toFixed(1) + "%";
       }
   }
 
@@ -379,8 +383,8 @@ const Predictor = () => {
 
           <div className={cardOuterClass}>
             <div className="flex items-center mb-6 text-[#10b981]"><TrendingUp className="w-[18px] h-[18px]" strokeWidth={2.5}/></div>
-            <p className="text-[9px] font-bold tracking-[0.2em] text-slate-500 uppercase mb-2">{formData.Year} Trend</p>
-            <p className={`text-[32px] font-black leading-none mb-2 ${trend2031.startsWith('-') ? 'text-emerald-400' : (trend2031.startsWith('+') ? 'text-rose-400' : 'text-white')}`}>{trend2031}</p>
+            <p className="text-[9px] font-bold tracking-[0.2em] text-slate-500 uppercase mb-2">{trendLabel}</p>
+            <p className={`text-[32px] font-black leading-none mb-2 ${trendVariable.startsWith('-') ? 'text-emerald-400' : (trendVariable.startsWith('+') ? 'text-rose-400' : 'text-white')}`}>{trendVariable}</p>
             <p className="text-[10px] text-slate-500 font-medium tracking-wide">vs last historical</p>
           </div>
 
