@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const API_URL = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:5000' : '');
 
 const AnimatedBackground = () => (
     <div className="absolute inset-0 overflow-hidden pointer-events-none z-0 perspective-[1000px]">
