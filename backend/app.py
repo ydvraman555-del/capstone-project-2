@@ -5,7 +5,10 @@ import numpy as np
 import os
 import pandas as pd
 
-app = Flask(__name__)
+# Update Flask initialization to serve frontend dist from the parent directory
+app = Flask(__name__, 
+            static_folder=os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'frontend', 'dist'),
+            static_url_path='/')
 CORS(app)
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -113,6 +116,17 @@ def get_metadata():
         'elements': sorted(list(df_history['Element'].unique())),
         'years': list(range(1990, 2032))
     })
+
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def serve(path):
+    if path != "" and os.path.exists(os.path.join(app.static_folder, path)):
+        return app.send_static_file(path)
+    else:
+        # Check if the build folder exists to avoid 500
+        if not os.path.exists(os.path.join(app.static_folder, 'index.html')):
+            return "Frontend build not found. Please ensure the frontend was built correctly.", 500
+        return app.send_static_file('index.html')
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
