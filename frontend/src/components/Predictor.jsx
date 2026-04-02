@@ -235,6 +235,20 @@ const Predictor = () => {
       setShowHistory(false);
   };
 
+  const deleteHistoryItem = (e, id) => {
+      e.stopPropagation();
+      const updatedHistory = history.filter(item => item.id !== id);
+      setHistory(updatedHistory);
+      localStorage.setItem('ghg_prediction_history', JSON.stringify(updatedHistory));
+  };
+
+  const clearHistory = () => {
+      if (window.confirm("Are you sure you want to clear all history?")) {
+          setHistory([]);
+          localStorage.removeItem('ghg_prediction_history');
+      }
+  };
+
   let combinedChartData = [];
   if (forecastData.history.length > 0 && forecastData.forecast.length > 0) {
       const history = forecastData.history;
@@ -305,11 +319,13 @@ const Predictor = () => {
       avgHistorical = Math.round(totalHist / forecastData.history.length).toLocaleString();
   }
 
-  if (forecastData.history && forecastData.forecast && forecastData.forecast.length > 0 && forecastData.history.length > 0) {
+  if (forecastData.history && forecastData.history.length > 0) {
       const lastHist = parseFloat(forecastData.history[forecastData.history.length - 1].Value);
-      const prediction2031 = parseFloat(forecastData.forecast[forecastData.forecast.length - 1].Value);
+      // Use the actual prediction for the selected year if available, otherwise fallback to 2031 forecast
+      const targetVal = prediction ? prediction.prediction : (forecastData.forecast.length > 0 ? parseFloat(forecastData.forecast[forecastData.forecast.length - 1].Value) : 0);
+      
       if (lastHist > 0) {
-          const percentChange = ((prediction2031 - lastHist) / lastHist) * 100;
+          const percentChange = ((targetVal - lastHist) / lastHist) * 100;
           trend2031 = (percentChange > 0 ? "+" : "") + percentChange.toFixed(1) + "%";
       }
   }
@@ -363,7 +379,7 @@ const Predictor = () => {
 
           <div className={cardOuterClass}>
             <div className="flex items-center mb-6 text-[#10b981]"><TrendingUp className="w-[18px] h-[18px]" strokeWidth={2.5}/></div>
-            <p className="text-[9px] font-bold tracking-[0.2em] text-slate-500 uppercase mb-2">2031 Trend</p>
+            <p className="text-[9px] font-bold tracking-[0.2em] text-slate-500 uppercase mb-2">{formData.Year} Trend</p>
             <p className={`text-[32px] font-black leading-none mb-2 ${trend2031.startsWith('-') ? 'text-emerald-400' : (trend2031.startsWith('+') ? 'text-rose-400' : 'text-white')}`}>{trend2031}</p>
             <p className="text-[10px] text-slate-500 font-medium tracking-wide">vs last historical</p>
           </div>
@@ -561,11 +577,21 @@ const Predictor = () => {
                 <motion.div initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }} transition={{ type: 'spring', damping: 25, stiffness: 200 }} className="fixed top-0 right-0 h-full w-full max-w-md bg-[#040c18] border-l border-sky-900/40 z-50 p-6 shadow-2xl overflow-y-auto">
                     <div className="flex justify-between items-center mb-8 border-b border-sky-900/40 pb-4">
                         <h2 className="text-xl font-black text-white flex items-center gap-3"><History className="text-[#0ea5e9]" /> Prediction History</h2>
-                        <button onClick={() => setShowHistory(false)} className="text-slate-500 hover:text-white bg-slate-800/50 p-2 rounded-full transition-colors"><X size={20} /></button>
+                        <div className="flex items-center gap-3">
+                            {history.length > 0 && (
+                                <button onClick={clearHistory} className="text-[9px] font-bold tracking-[0.2em] uppercase text-rose-500 hover:text-rose-400 px-3 py-1.5 rounded-lg border border-rose-500/20 hover:bg-rose-500/10 transition-all">
+                                    Clear All
+                                </button>
+                            )}
+                            <button onClick={() => setShowHistory(false)} className="text-slate-500 hover:text-white bg-slate-800/50 p-2 rounded-full transition-colors"><X size={20} /></button>
+                        </div>
                     </div>
                     
                     {history.length === 0 ? (
-                        <div className="text-center text-slate-500 py-10">No past predictions found.</div>
+                        <div className="flex flex-col items-center justify-center py-20 text-center opacity-40">
+                            <History size={48} className="mb-4" />
+                            <p className="text-sm font-bold tracking-widest uppercase">No past predictions found.</p>
+                        </div>
                     ) : (
                         <div className="space-y-4">
                             {history.map((item) => (
@@ -578,7 +604,15 @@ const Predictor = () => {
                                         <span className="text-[#0ea5e9] font-black">{item.year}</span>
                                     </div>
                                     <div className="flex justify-between items-end mt-4">
-                                        <span className="text-[10px] text-slate-500 uppercase tracking-wider">{item.timestamp}</span>
+                                        <div className="flex flex-col gap-2">
+                                            <span className="text-[10px] text-slate-500 uppercase tracking-wider">{item.timestamp}</span>
+                                            <button 
+                                                onClick={(e) => deleteHistoryItem(e, item.id)}
+                                                className="text-[9px] font-bold text-slate-600 hover:text-rose-400 uppercase tracking-[0.2em] w-fit transition-colors"
+                                            >
+                                                [ Delete ]
+                                            </button>
+                                        </div>
                                         <div className="flex gap-2 items-center">
                                             <span className={`text-[10px] font-bold tracking-widest uppercase px-2 py-0.5 rounded border ${
                                                 item.insight === 'High' ? 'text-red-400 border-red-500/30 bg-red-500/10' : 
