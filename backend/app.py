@@ -43,17 +43,28 @@ except Exception as e:
     df_history = None
 
 def get_smart_prediction(area, element, target_year):
-    # Predict using the trained RandomForestRegressor
+    # Determine the end of historical training data
+    TRAIN_END_YEAR = 2021
+    
+    # Check if the year exists in history first for maximum accuracy/consistency
+    if df_history is not None:
+        hist_match = df_history[(df_history['Area'] == area) & (df_history['Element'] == element)]
+        year_match = hist_match[hist_match['Year'] == target_year]
+        if not year_match.empty:
+            return float(year_match.iloc[0]['Value'])
+            
+    # If the year is in the past but missing from CSV, or in the future, use the model
     try:
         enc_area = area_encoder.transform([area])[0]
         enc_element = element_encoder.transform([element])[0]
         
         # RF anchor prediction
         X_pred = pd.DataFrame({'Area': [enc_area], 'Year': [target_year], 'Element': [enc_element]})
+        # Ensure column order matches training ['Area', 'Year', 'Element']
+        X_pred = X_pred[['Area', 'Year', 'Element']]
         base_prediction = float(model.predict(X_pred)[0])
         
-        # Random Forest cannot extrapolate future trends, so we apply a rigorous dynamic historical slope for targets > 2021
-        TRAIN_END_YEAR = 2021
+        # Real-time dynamic slope adjustment for future targets (> 2021)
         if target_year > TRAIN_END_YEAR and df_history is not None:
             hist_match = df_history[(df_history['Area'] == area) & (df_history['Element'] == element)].sort_values('Year')
             recent = hist_match.tail(10)
@@ -63,21 +74,31 @@ def get_smart_prediction(area, element, target_year):
                 # Apply continuous slope from the RF anchor
                 years_ahead = target_year - TRAIN_END_YEAR
                 dynamic_pred = base_prediction + (slope * years_ahead)
-                return float(max(0, dynamic_pred)) # Prevent negative emissions
+                return float(max(0, dynamic_pred)) 
                 
         return base_prediction
     except Exception as e:
-        print(f"Prediction error: {e}")
-        # Fallback to history trend if prediction fails
-        TRAIN_END_YEAR = 2021
-        hist_match = df_history[(df_history['Area'] == area) & (df_history['Element'] == element)].sort_values('Year')
-        if len(hist_match) > 0:
-            last_val = hist_match.iloc[-1]['Value']
-            # Calculate a simple trend slope for 2022-2031
-            slope = 0.02 * last_val # Default 2% growth for visibility
-            years_ahead = max(0, target_year - TRAIN_END_YEAR)
-            return float(last_val + (slope * years_ahead))
-        return 1000.0 # Fallback
+        # Improved fallback trend for future years (> 2021)
+        if target_year > TRAIN_END_YEAR and df_history is not None:
+            hist_match = df_history[(df_history['Area'] == area) & (df_history['Element'] == element)].sort_values('Year')
+            if len(hist_match) > 0:
+                last_year = hist_match.iloc[-1]['Year']
+                last_val = hist_match.iloc[-1]['Value']
+                # Calculate simple trend 2% growth if model fails
+                slope = 0.02 * last_val
+                years_ahead = target_year - last_year
+                return float(max(0, last_val + (slope * years_ahead)))
+                
+        # If year is in the past, return the closest available data instead of defaulting to 2021
+        if df_history is not None:
+            hist_match = df_history[(df_history['Area'] == area) & (df_history['Element'] == element)].sort_values('Year')
+            if len(hist_match) > 0:
+                # Find closest historical point
+                closest = hist_match.iloc[(hist_match['Year']-target_year).abs().argsort()[:1]]
+                return float(closest.iloc[0]['Value'])
+                
+        return 0.0 # Extreme fallback 
+
 
 @app.route('/predict', methods=['POST'])
 def predict():

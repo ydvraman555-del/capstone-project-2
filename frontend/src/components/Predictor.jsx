@@ -311,8 +311,12 @@ const Predictor = () => {
   };
   const formattedGas = formatGas(elLabel);
 
+  let isHistorical = parseInt(formData.Year) <= 2021;
   let isFreshPrediction = prediction && prediction.year === formData.Year && prediction.area === formData.Area && prediction.element === formData.Element;
-  let trendLabel = isFreshPrediction ? `${formData.Year} Trend` : "2031 Outlook";
+  let trendLabel = isFreshPrediction 
+    ? (isHistorical ? `${formData.Year} Baseline` : `${formData.Year} Trend`) 
+    : "2031 Outlook";
+
 
   if (forecastData.history && forecastData.history.length > 0) {
       const maxObj = forecastData.history.reduce((max, obj) => (parseFloat(obj.Value) > parseFloat(max.Value) ? obj : max), forecastData.history[0]);
@@ -450,7 +454,9 @@ const Predictor = () => {
               <AnimatePresence>
                 {prediction && (
                    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col">
-                      <p className="text-[10px] font-bold tracking-[0.3em] uppercase text-slate-500 mb-6 pl-2">Projected Output</p>
+                      <p className="text-[10px] font-bold tracking-[0.3em] uppercase text-slate-500 mb-6 pl-2">
+                          {isHistorical ? "Historical Record" : "Intelligence Forecast"}
+                      </p>
                       <div className="flex items-end gap-3 mb-6 pl-2">
                          <span className="text-[48px] font-black italic tracking-tighter text-white leading-none">
                             {prediction.prediction.toLocaleString(undefined, {maximumFractionDigits: 1})}
