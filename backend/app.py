@@ -4,6 +4,14 @@ import pickle
 import numpy as np
 import os
 import pandas as pd
+import sys
+
+# NumPy 2.x to 1.x compatibility patch for unpickling models
+try:
+    import numpy._core as _core
+except ModuleNotFoundError:
+    import numpy.core as _core
+    sys.modules['numpy._core'] = _core
 
 # Update Flask initialization to serve frontend dist from the parent directory
 app = Flask(__name__, 
