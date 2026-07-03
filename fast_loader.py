@@ -17,12 +17,12 @@ import os
 import time
 import sys
 
-# NumPy 2.x to 1.x compatibility patch for unpickling models
-try:
-    import numpy._core as _core
-except ModuleNotFoundError:
-    import numpy.core as _core
-    sys.modules['numpy._core'] = _core
+# Custom Unpickler to handle NumPy 1.x / 2.x cross-version loading
+class NumPyRenameUnpickler(pickle.Unpickler):
+    def find_class(self, module, name):
+        if module.startswith("numpy._core"):
+            module = module.replace("numpy._core", "numpy.core")
+        return super().find_class(module, name)
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -44,7 +44,7 @@ def load_model():
         print(f"Loading compressed model from rf.pkl.gz...")
         start = time.time()
         with gzip.open(MODEL_COMPRESSED, 'rb') as f:
-            model = pickle.load(f)
+            model = NumPyRenameUnpickler(f).load()
         elapsed = time.time() - start
         print(f"  Model loaded in {elapsed:.2f}s (compressed)")
         return model
@@ -53,7 +53,7 @@ def load_model():
         print(f"Loading original model from random_forest.pkl...")
         start = time.time()
         with open(MODEL_ORIGINAL, 'rb') as f:
-            model = pickle.load(f)
+            model = NumPyRenameUnpickler(f).load()
         elapsed = time.time() - start
         print(f"  Model loaded in {elapsed:.2f}s (original)")
         return model
@@ -67,11 +67,12 @@ def load_model():
 def load_encoders():
     """Load area and element encoders."""
     with open(AREA_ENCODER_PATH, 'rb') as f:
-        area_encoder = pickle.load(f)
+        area_encoder = NumPyRenameUnpickler(f).load()
     with open(ELEMENT_ENCODER_PATH, 'rb') as f:
-        element_encoder = pickle.load(f)
+        element_encoder = NumPyRenameUnpickler(f).load()
     print("  Encoders loaded ✓")
     return area_encoder, element_encoder
+
 
 
 def load_all_artifacts():

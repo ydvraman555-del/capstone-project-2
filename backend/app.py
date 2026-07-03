@@ -6,12 +6,12 @@ import os
 import pandas as pd
 import sys
 
-# NumPy 2.x to 1.x compatibility patch for unpickling models
-try:
-    import numpy._core as _core
-except ModuleNotFoundError:
-    import numpy.core as _core
-    sys.modules['numpy._core'] = _core
+# Custom Unpickler to handle NumPy 1.x / 2.x cross-version loading
+class NumPyRenameUnpickler(pickle.Unpickler):
+    def find_class(self, module, name):
+        if module.startswith("numpy._core"):
+            module = module.replace("numpy._core", "numpy.core")
+        return super().find_class(module, name)
 
 # Update Flask initialization to serve frontend dist from the parent directory
 app = Flask(__name__, 
@@ -29,14 +29,15 @@ CSV_PATH = os.path.join(os.path.dirname(BASE_DIR), 'Global Green House Gas Emiss
 # Load Artifacts
 try:
     with open(MODEL_PATH, 'rb') as f:
-        model = pickle.load(f)
+        model = NumPyRenameUnpickler(f).load()
     with open(AREA_ENCODER_PATH, 'rb') as f:
-        area_encoder = pickle.load(f)
+        area_encoder = NumPyRenameUnpickler(f).load()
     with open(ELEMENT_ENCODER_PATH, 'rb') as f:
-        element_encoder = pickle.load(f)
+        element_encoder = NumPyRenameUnpickler(f).load()
     print("SUCCESS: Model and Encoders loaded.")
 except Exception as e:
     print(f"ERROR loading artifacts: {e}")
+
 
 # Load Historical Data
 try:

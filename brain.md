@@ -321,5 +321,6 @@ python retrain.py
 
 13. **Frontend on Vercel, Backend on Render** — These are separate deployments. Frontend calls backend API via absolute URL (must be configured in frontend env/config).
 
-14. **NumPy 1.x / 2.x Compatibility Patch** — A patch has been applied to `backend/app.py` and `fast_loader.py` to map `sys.modules['numpy._core']` to `numpy.core` if `numpy._core` is missing. This prevents crashes when unpickling models built on NumPy 2.x under environments running NumPy 1.x (such as Render's default dependencies).
+14. **NumPy 1.x / 2.x Compatibility Patch** — A custom `NumPyRenameUnpickler` subclass of `pickle.Unpickler` has been implemented in `backend/app.py` and `fast_loader.py` to intercept module loads and replace `numpy._core` with `numpy.core` on-the-fly. This scopes the change completely within the pickle process and avoids modifying the global `sys.modules`, which previously caused a Gunicorn worker segmentation fault.
+
 
