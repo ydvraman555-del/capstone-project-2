@@ -188,7 +188,7 @@ const Predictor = () => {
       
       pdf.setFont("helvetica", "normal");
       pdf.setTextColor(71, 85, 105);
-      pdf.text(`Trend vs Historic Baseline: ${trend2031}`, 15, threatY + 16);
+      pdf.text(`Trend vs Historic Baseline: ${trendVariable}`, 15, threatY + 16);
       pdf.text(`Peak Historical Emission Record: ${peakEmission} kt (in ${peakYear})`, 15, threatY + 24);
       pdf.text(`Historical Average: ${avgHistorical} kt / year`, 15, threatY + 32);
       
