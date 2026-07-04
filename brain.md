@@ -216,8 +216,10 @@ This is the main dashboard with:
 - **Area/Element/Year selectors** (dropdowns populated from `/metadata`)
 - **Single prediction** form (calls `POST /predict`)
 - **Forecast chart** (calls `GET /forecast`, renders with Recharts)
-- **Threat level indicator** (High/Medium/Low)
-- **PDF export** (html2canvas + jspdf)
+- **Threat level indicator** & **Mitigation Strategy Advisor** (dynamic recommendations)
+- **Historical Event Timeline** (peaking/troughing driver attributions)
+- **Collapsible Projections Table** & **Interactive Policy Simulator & Offset Calculator**
+- **Multi-page PDF export** (html2canvas + jspdf)
 - **Animated transitions** (framer-motion)
 
 ### Key Component: Landing.jsx (~14KB)

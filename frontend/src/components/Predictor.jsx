@@ -56,6 +56,7 @@ const Predictor = () => {
   const [forecastData, setForecastData] = useState({ history: [], forecast: [] });
   const [eventsData, setEventsData] = useState(null);
   const [showDataTable, setShowDataTable] = useState(false);
+  const [reductionGoal, setReductionGoal] = useState(15);
   const [error, setError] = useState(null);
   const [history, setHistory] = useState([]);
   const [showHistory, setShowHistory] = useState(false);
@@ -750,6 +751,64 @@ const Predictor = () => {
                      </div>
                   )}
               </div>
+
+              {/* Climate Mitigation Policy Simulator */}
+              {prediction && (
+                 <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="bg-[#0b1426] border border-sky-900/40 rounded-[32px] p-8 shadow-2xl flex flex-col border-t-0 border-l-0 text-left mt-6">
+                     <div className="flex justify-between items-start mb-6">
+                        <div>
+                           <h3 className="text-[13px] font-black tracking-[0.2em] uppercase text-white mb-1">POLICY SIMULATOR & OFFSET CALCULATOR</h3>
+                           <p className="text-[11px] text-slate-500 tracking-wide font-medium">Estimate environmental offsets from target reductions</p>
+                        </div>
+                        <div className="border border-sky-900/40 rounded-xl px-4 py-1.5 bg-[#051122]">
+                           <span className="text-sky-400 text-[11px] font-black tracking-wider uppercase">{reductionGoal}% Reduction Goal</span>
+                        </div>
+                     </div>
+
+                     <div className="space-y-6">
+                        <div className="space-y-3">
+                           <div className="flex justify-between text-[11px] text-slate-400 font-bold uppercase tracking-wider pl-1">
+                              <span>Target Reduction Target</span>
+                              <span>{reductionGoal}%</span>
+                           </div>
+                           <input 
+                              type="range" 
+                              min="0" 
+                              max="50" 
+                              value={reductionGoal} 
+                              onChange={(e) => setReductionGoal(parseInt(e.target.value))} 
+                              className="w-full h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-[#0ea5e9]"
+                           />
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 border-t border-sky-950/40">
+                           <div className="bg-[#050c18] border border-sky-950/40 rounded-2xl p-4 space-y-1">
+                              <p className="text-[9px] font-bold text-slate-500 tracking-[0.15em] uppercase">Emissions Reduced</p>
+                              <p className="text-[20px] font-black text-sky-400 leading-none">
+                                 {((prediction.prediction * reductionGoal) / 100).toLocaleString(undefined, {maximumFractionDigits: 1})}
+                              </p>
+                              <p className="text-[9.5px] text-slate-500 font-medium">kt {formattedGas} offset</p>
+                           </div>
+
+                           <div className="bg-[#050c18] border border-sky-950/40 rounded-2xl p-4 space-y-1">
+                              <p className="text-[9px] font-bold text-slate-500 tracking-[0.15em] uppercase">Forest Equivalent</p>
+                              <p className="text-[20px] font-black text-[#10b981] leading-none">
+                                 {Math.round(((prediction.prediction * reductionGoal) / 100) * 16.5).toLocaleString()}k
+                              </p>
+                              <p className="text-[9.5px] text-slate-500 font-medium">tree seedlings grown</p>
+                           </div>
+
+                           <div className="bg-[#050c18] border border-sky-950/40 rounded-2xl p-4 space-y-1">
+                              <p className="text-[9px] font-bold text-slate-500 tracking-[0.15em] uppercase">Cars Removed</p>
+                              <p className="text-[20px] font-black text-rose-400 leading-none">
+                                 {Math.round(((prediction.prediction * reductionGoal) / 100) * 217).toLocaleString()}
+                              </p>
+                              <p className="text-[9.5px] text-slate-500 font-medium">vehicles off road / yr</p>
+                           </div>
+                        </div>
+                     </div>
+                 </motion.div>
+              )}
 
           </div>
           
