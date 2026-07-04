@@ -1,0 +1,194 @@
+{
+  "Brazil": {
+    "Emissions (CO2)": {
+      "drivers": "CO₂ emissions are dominated by deforestation in the Amazon basin. A global commodity boom in the early 2000s accelerated agricultural land clearing for soy and cattle.",
+      "peak_cause": "Peak emissions coincided with historically high rates of Amazon deforestation, driven by high global prices for beef and soybeans, and limited environmental enforcement.",
+      "drop_cause": "Emissions declined significantly after 2004 due to the implementation of the Action Plan for Prevention and Control of Deforestation in the Legal Amazon (PPCDAm), which introduced satellite-based real-time monitoring (DETER) and strict federal law enforcement.",
+      "mitigation": [
+        "Strengthening satellite monitoring and environmental patrol budgets.",
+        "Expanding indigenous territory boundaries to act as carbon buffers.",
+        "Promoting low-carbon agriculture (Plano ABC) and agroforestry."
+      ]
+    },
+    "Emissions (CH4)": {
+      "drivers": "Methane emissions are primarily driven by enteric fermentation from the country's massive beef cattle herd (the largest commercial herd globally) and wet rice agriculture.",
+      "peak_cause": "Peaks are associated with periods of rapid herd expansion and high demand for beef exports.",
+      "drop_cause": "Reductions were achieved through productivity gains in livestock (reducing slaughter age) and pasture restoration projects.",
+      "mitigation": [
+        "Improving livestock feed quality to reduce enteric fermentation emissions.",
+        "Implementing rotational grazing and pasture recovery practices.",
+        "Adopting alternate wetting and drying (AWD) in rice paddies."
+      ]
+    },
+    "Emissions (N2O)": {
+      "drivers": "Nitrous oxide emissions stem from nitrogen fertilizer application in large-scale agriculture (soy, corn, sugarcane) and animal manure management.",
+      "peak_cause": "Driven by agricultural expansion and intensive use of synthetic nitrogen fertilizers.",
+      "drop_cause": "Lowered through the adoption of biological nitrogen fixation in soybean cultivation.",
+      "mitigation": [
+        "Expanding direct-seeding methods (no-till farming).",
+        "Optimizing synthetic fertilizer application timing and placement.",
+        "Promoting bio-fertilizers and green manure crops."
+      ]
+    }
+  },
+  "United States": {
+    "Emissions (CO2)": {
+      "drivers": "Historically driven by fossil fuel combustion for electricity generation and transportation.",
+      "peak_cause": "Emissions peaked in 2007, representing the high-water mark of coal-fired electricity generation before the shale gas boom and renewables expansion.",
+      "drop_cause": "The post-2007 decline was driven by a rapid market shift from coal to natural gas (which emits ~50% less CO₂ per unit of energy) and substantial growth in wind and solar power.",
+      "mitigation": [
+        "Accelerating transition to 100% clean power (solar, wind, nuclear).",
+        "Expanding electric vehicle charging infrastructure and fuel efficiency standards.",
+        "Retrofitting carbon capture technology on remaining industrial sites."
+      ]
+    },
+    "Emissions (CH4)": {
+      "drivers": "Methane is driven by natural gas extraction (fracking leaks), coal mining, landfills, and livestock enteric fermentation.",
+      "peak_cause": "Peaks correlate with the expansion of shale gas drilling and pipeline transport losses.",
+      "drop_cause": "Drops are linked to EPA regulations on fugitive emissions, leak detection programs, and landfill gas capture systems.",
+      "mitigation": [
+        "Deploying optical gas imaging to detect and repair pipeline leaks.",
+        "Mandating capture of methane from oil and gas well completions.",
+        "Expanding municipal landfill gas-to-energy projects."
+      ]
+    },
+    "Emissions (N2O)": {
+      "drivers": "Driven heavily by synthetic nitrogen fertilizer usage in the agricultural Midwest (the Corn Belt) and industrial processes.",
+      "peak_cause": "Correlated with intensive crop rotations and wet soil conditions that trigger denitrification.",
+      "drop_cause": "Reductions achieved through precision agriculture technologies and soil management.",
+      "mitigation": [
+        "Using variable-rate fertilizer applicators driven by GPS and soil sensors.",
+        "Utilizing nitrification inhibitors to slow the conversion of nitrogen in soil.",
+        "Restoring wetlands to filter nitrogen runoffs."
+      ]
+    }
+  },
+  "China": {
+    "Emissions (CO2)": {
+      "drivers": "Driven by heavy manufacturing, construction, and a power grid heavily reliant on coal.",
+      "peak_cause": "Massive rise beginning in 2001 when China joined the World Trade Organization (WTO), prompting a global manufacturing boom powered by rapid coal plant expansions.",
+      "drop_cause": "Rate of growth slowed and stabilized due to national carbon intensity targets, decommissioning of inefficient coal plants, and record-breaking solar/nuclear expansions.",
+      "mitigation": [
+        "Implementing the national Emissions Trading Scheme (ETS) for industrial sectors.",
+        "Replacing coal-fired district heating with natural gas and heat pumps.",
+        "Investing in ultra-high-voltage grid transmission to move renewable energy."
+      ]
+    },
+    "Emissions (CH4)": {
+      "drivers": "Methane emissions are dominated by coal mine methane (gassy coal seams venting gas) and flooded rice cultivation.",
+      "peak_cause": "Linked to peak coal extraction volumes to support the industrial boom.",
+      "drop_cause": "Venting was mitigated by capturing coalbed methane for power generation and improving water management in rice paddies.",
+      "mitigation": [
+        "Mandating coalbed methane capture and utilization for mine electricity.",
+        "Promoting dry-seeding and alternate water management in paddy agriculture.",
+        "Improving municipal solid waste sorting and biogas capture."
+      ]
+    },
+    "Emissions (N2O)": {
+      "drivers": "Primarily driven by intensive overuse of nitrogen fertilizers in smallholder farming and chemical production (adipic acid).",
+      "peak_cause": "Driven by historic over-fertilization practices aimed at maximizing crop yields.",
+      "drop_cause": "Decline initiated by the national 'Zero Growth in Chemical Fertilizer Use' policy.",
+      "mitigation": [
+        "Providing agricultural extension training on optimal fertilizer ratios.",
+        "Installing thermal destruction units in nylon and adipic acid factories.",
+        "Promoting organic farming and soil testing kits."
+      ]
+    }
+  },
+  "India": {
+    "Emissions (CO2)": {
+      "drivers": "Driven by coal-fueled electricity, cement production, and expanding transportation networks to support a massive population.",
+      "peak_cause": "Emissions have risen steadily alongside rapid GDP growth, urbanization, and increased industrial capacity.",
+      "drop_cause": "A temporary dip occurred in 2020 due to COVID-19 lockdowns; overall trends are being countered by major solar expansion programs.",
+      "mitigation": [
+        "Expanding utility-scale solar parks (e.g., Bhadla Solar Park).",
+        "Electrifying the Indian Railways and public transit systems.",
+        "Implementing energy efficiency standards (PAT scheme) for heavy industries."
+      ]
+    },
+    "Emissions (CH4)": {
+      "drivers": "India has the world's largest livestock population, leading to high enteric fermentation emissions, coupled with extensive rice cultivation.",
+      "peak_cause": "Driven by steady population growth requiring expanded dairy farming and rice production.",
+      "drop_cause": "Managed through improved livestock breeding and high-yield, short-duration crop varieties.",
+      "mitigation": [
+        "Introducing high-quality balanced rations and feed additives for cattle.",
+        "Scaling up biogas digesters in rural farming communities.",
+        "Promoting Direct Seeded Rice (DSR) to reduce water logging."
+      ]
+    },
+    "Emissions (N2O)": {
+      "drivers": "Driven by nitrogen fertilizer applications to support agricultural yields for food security.",
+      "peak_cause": "Correlates with government-subsidized chemical fertilizer distribution.",
+      "drop_cause": "Addressed by introducing neem-coated urea, which slows down nitrogen release in soils.",
+      "mitigation": [
+        "Mandating 100% neem-coating of all urea fertilizers.",
+        "Encouraging micro-irrigation systems to prevent fertilizer leaching.",
+        "Promoting soil health card recommendations to avoid over-application."
+      ]
+    }
+  },
+  "Russia": {
+    "Emissions (CO2)": {
+      "drivers": "Driven by fossil fuel power plants, heavy metallurgy, and northern heating systems.",
+      "peak_cause": "Emissions peaked in the late 1980s under the Soviet Union's highly inefficient, heavy industrial command economy.",
+      "drop_cause": "A massive 30-40% drop occurred in 1991–1995 following the collapse of the Soviet Union, which shuttered thousands of inefficient factories.",
+      "mitigation": [
+        "Modernizing aging thermal power plants with high-efficiency gas turbines.",
+        "Upgrading urban district heating pipes to reduce thermal transmission leaks.",
+        "Increasing carbon absorption capacity by improving forest fire controls in Siberia."
+      ]
+    },
+    "Emissions (CH4)": {
+      "drivers": "Dominated by fugitive leaks from Russia's vast natural gas pipeline network (the largest in the world) and coal mining.",
+      "peak_cause": "Peaks correlate with high volume oil and gas production cycles in older fields with leaky infrastructure.",
+      "drop_cause": "Drops achieved by Gazprom upgrading pipeline compressors and repairing transport leaks.",
+      "mitigation": [
+        "Implementing continuous satellite and drone leak detection along pipelines.",
+        "Upgrading gas compressor stations to eliminate gas venting.",
+        "Developing coalbed methane extraction technologies in the Kuzbass basin."
+      ]
+    },
+    "Emissions (N2O)": {
+      "drivers": "Driven by agricultural soil treatments and chemical manufacturing.",
+      "peak_cause": "Peaked in the late Soviet period due to state-supported massive fertilizer use.",
+      "drop_cause": "Plummeted in 1992 because agricultural subsidies ended, leading to a temporary collapse in fertilizer purchases.",
+      "mitigation": [
+        "Rebuilding precision fertilizer systems in the southern grain belts.",
+        "Installing N₂O abatement catalysts in nitric acid production plants.",
+        "Adopting low-impact organic farming techniques."
+      ]
+    }
+  },
+  "default": {
+    "Emissions (CO2)": {
+      "drivers": "Typically driven by fossil-fuel power grids, industrial manufacturing, and gasoline/diesel transit systems.",
+      "peak_cause": "Peak emissions are usually linked to rapid industrialization phases, economic booms, or reliance on coal/oil power generation.",
+      "drop_cause": "Reductions are generally achieved through grid modernization, switching from coal to natural gas/renewables, and energy efficiency programs.",
+      "mitigation": [
+        "Transitioning the electricity grid to renewable sources (wind, solar, hydro).",
+        "Improving fuel efficiency standards and supporting public transport electrification.",
+        "Implementing energy-efficient construction codes and industrial recycling."
+      ]
+    },
+    "Emissions (CH4)": {
+      "drivers": "Typically driven by agricultural livestock (enteric fermentation), waste decomposition in municipal landfills, and organic waste.",
+      "peak_cause": "Correlated with livestock population increases and unmanaged municipal open-dump landfills.",
+      "drop_cause": "Mitigated by introducing modern landfill gas capture systems and improving livestock feed efficiency.",
+      "mitigation": [
+        "Installing biogas capture domes at municipal landfills.",
+        "Adopting improved feed formulas to reduce livestock digestive emissions.",
+        "Implementing composting programs to divert organic waste from landfills."
+      ]
+    },
+    "Emissions (N2O)": {
+      "drivers": "Mainly driven by synthetic nitrogen fertilizer usage in agriculture and chemical manufacturing processes.",
+      "peak_cause": "Linked to crop expansion periods and unguided application of chemical crop fertilizers.",
+      "drop_cause": "Reduced through the introduction of soil health testing and optimized fertilizer placement.",
+      "mitigation": [
+        "Adopting precision agriculture soil-testing methods to calibrate fertilizer use.",
+        "Promoting crop rotation with nitrogen-fixing plants (legumes).",
+        "Using slow-release or organic fertilizers to limit nitrogen runoff."
+      ]
+    }
+  }
+}

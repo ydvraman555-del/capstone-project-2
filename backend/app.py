@@ -5,6 +5,7 @@ import numpy as np
 import os
 import pandas as pd
 import sys
+import json
 
 # Custom Unpickler to handle NumPy 1.x / 2.x cross-version loading
 class NumPyRenameUnpickler(pickle.Unpickler):
@@ -25,6 +26,16 @@ MODEL_PATH = os.path.join(os.path.dirname(BASE_DIR), 'random_forest.pkl')
 AREA_ENCODER_PATH = os.path.join(os.path.dirname(BASE_DIR), 'area_encoder.pkl')
 ELEMENT_ENCODER_PATH = os.path.join(os.path.dirname(BASE_DIR), 'element_encoder.pkl')
 CSV_PATH = os.path.join(os.path.dirname(BASE_DIR), 'Global Green House Gas Emissions.csv')
+EVENTS_PATH = os.path.join(BASE_DIR, 'historical_events.json')
+
+# Load historical events database
+try:
+    with open(EVENTS_PATH, 'r', encoding='utf-8') as f:
+        events_db = json.load(f)
+    print("SUCCESS: Historical events database loaded.")
+except Exception as e:
+    print(f"ERROR loading historical events: {e}")
+    events_db = {}
 
 # Load Artifacts
 try:
@@ -127,6 +138,64 @@ def predict():
         return jsonify({'prediction': prediction, 'insight': insight, 'status': 'success'})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+@app.route('/events', methods=['GET'])
+def get_events():
+    area = request.args.get('area')
+    element = request.args.get('element')
+    
+    if df_history is None:
+        return jsonify({'error': 'No historical data loaded'}), 500
+        
+    hist_data = df_history[(df_history['Area'] == area) & (df_history['Element'] == element)].sort_values('Year')
+    
+    if hist_data.empty:
+        return jsonify({'status': 'no_data', 'events': [], 'drivers': 'No drivers found.'})
+        
+    # Find Peak
+    peak_row = hist_data.loc[hist_data['Value'].idxmax()]
+    peak_year = int(peak_row['Year'])
+    peak_val = float(peak_row['Value'])
+    
+    # Find Trough (Lowest)
+    trough_row = hist_data.loc[hist_data['Value'].idxmin()]
+    trough_year = int(trough_row['Year'])
+    trough_val = float(trough_row['Value'])
+    
+    country_data = events_db.get(area, events_db.get("default", {}))
+    gas_data = country_data.get(element, events_db.get("default", {}).get(element, {}))
+    
+    drivers = gas_data.get("drivers", "General economic and demographic drivers.")
+    peak_cause = gas_data.get("peak_cause", "Historical peak in production activity.")
+    drop_cause = gas_data.get("drop_cause", "Introduction of mitigation programs and improved efficiencies.")
+    mitigation = gas_data.get("mitigation", ["General emissions reduction pathways."])
+    
+    timeline = [
+        {
+            "year": peak_year,
+            "type": "peak",
+            "title": f"Peak Emissions ({peak_val:,.1f} kt)",
+            "description": f"Emissions reached an all-time high of {peak_val:,.1f} kilotonnes. {peak_cause}"
+        },
+        {
+            "year": trough_year,
+            "type": "trough",
+            "title": f"Lowest Recorded Emissions ({trough_val:,.1f} kt)",
+            "description": f"Emissions hit a historical low of {trough_val:,.1f} kilotonnes. {drop_cause}"
+        }
+    ]
+    
+    # Sort chronologically
+    timeline = sorted(timeline, key=lambda x: x['year'])
+    
+    return jsonify({
+        "status": "success",
+        "area": area,
+        "element": element,
+        "drivers": drivers,
+        "timeline": timeline,
+        "mitigation": mitigation
+    })
 
 @app.route('/forecast', methods=['GET'])
 def forecast():

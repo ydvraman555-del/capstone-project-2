@@ -54,6 +54,8 @@ const Predictor = () => {
   const [formData, setFormData] = useState({ Area: '', Element: '', Year: '2024' });
   const [prediction, setPrediction] = useState(null);
   const [forecastData, setForecastData] = useState({ history: [], forecast: [] });
+  const [eventsData, setEventsData] = useState(null);
+  const [showDataTable, setShowDataTable] = useState(false);
   const [error, setError] = useState(null);
   const [history, setHistory] = useState([]);
   const [showHistory, setShowHistory] = useState(false);
@@ -94,6 +96,9 @@ const Predictor = () => {
 
   const fetchForecast = (area, element) => {
     axios.get(`${API_URL}/forecast`, { params: { area, element } }).then(res => setForecastData(res.data));
+    axios.get(`${API_URL}/events`, { params: { area, element } })
+      .then(res => setEventsData(res.data))
+      .catch(err => setEventsData(null));
   };
 
   const handlePredict = async (e) => {
@@ -125,43 +130,44 @@ const Predictor = () => {
       const pdf = new jsPDF('p', 'mm', 'a4');
       const pageWidth = pdf.internal.pageSize.getWidth();
       
+      // PAGE 1: ASSESSMENT & HISTORICAL CONTEXT
       pdf.setFillColor(255, 255, 255);
       pdf.rect(0, 0, pageWidth, 297, 'F');
       
       pdf.setTextColor(15, 23, 42);
-      pdf.setFontSize(22);
+      pdf.setFontSize(20);
       pdf.setFont("helvetica", "bold");
       pdf.text("Global GHG Emissions Intelligence System", 15, 25);
       
-      pdf.setFontSize(14);
+      pdf.setFontSize(13);
       pdf.setTextColor(100, 116, 139);
-      pdf.text("Official Forecast Assessment Report", 15, 33);
+      pdf.text("Official Forecast Assessment Report", 15, 32);
       
       pdf.setDrawColor(226, 232, 240);
       pdf.setLineWidth(0.5);
-      pdf.line(15, 40, pageWidth - 15, 40);
+      pdf.line(15, 38, pageWidth - 15, 38);
       
-      pdf.setFontSize(10);
+      pdf.setFontSize(9);
       pdf.setFont("helvetica", "normal");
-      pdf.text(`Generated on: ${new Date().toLocaleString()}`, 15, 47);
-      pdf.text(`Model Accuracy: 99.3% R2 Score`, pageWidth - 70, 47);
+      pdf.text(`Generated on: ${new Date().toLocaleString()}`, 15, 45);
+      pdf.text(`Model Accuracy: 99.3% R2 Score`, pageWidth - 70, 45);
       
       pdf.setFontSize(12);
       pdf.setFont("helvetica", "bold");
       pdf.setTextColor(15, 23, 42);
-      pdf.text("Assessment Target", 15, 60);
+      pdf.text("Assessment Target", 15, 58);
 
       pdf.setFontSize(11);
       pdf.setFont("helvetica", "normal");
       pdf.setTextColor(71, 85, 105);
-      pdf.text(`Geography: ${formData.Area}`, 15, 68);
-      pdf.text(`Analyzed Element: ${formData.Element}`, 15, 75);
-      pdf.text(`Forecast Horizon Year: ${formData.Year}`, 15, 82);
+      pdf.text(`Geography: ${formData.Area}`, 15, 66);
+      pdf.text(`Analyzed Element: ${formData.Element}`, 15, 73);
+      pdf.text(`Forecast Horizon Year: ${formData.Year}`, 15, 80);
       
       pdf.setFontSize(12);
       pdf.setFont("helvetica", "bold");
       pdf.setTextColor(15, 23, 42);
-      pdf.text("Executive Summary", 15, 95);
+      pdf.text("Executive Summary", 15, 93);
       
       pdf.setFontSize(11);
       pdf.setFont("helvetica", "normal");
@@ -169,9 +175,9 @@ const Predictor = () => {
       const summaryText = `Based on historical patterns dating back to 1990, the machine learning model projects that ${formData.Element.split('(')[1]?.replace(')', '') || 'emissions'} in ${formData.Area} will reach approximately ${prediction?.prediction?.toLocaleString(undefined, {maximumFractionDigits: 1})} kilotonnes by the year ${formData.Year}.`;
       
       const splitSummary = pdf.splitTextToSize(summaryText, pageWidth - 30);
-      pdf.text(splitSummary, 15, 103);
+      pdf.text(splitSummary, 15, 101);
 
-      let threatY = 103 + (splitSummary.length * 6) + 10;
+      let threatY = 101 + (splitSummary.length * 6) + 8;
       pdf.setFontSize(12);
       pdf.setFont("helvetica", "bold");
       pdf.setTextColor(15, 23, 42);
@@ -192,14 +198,105 @@ const Predictor = () => {
       pdf.text(`Peak Historical Emission Record: ${peakEmission} kt (in ${peakYear})`, 15, threatY + 24);
       pdf.text(`Historical Average: ${avgHistorical} kt / year`, 15, threatY + 32);
       
-      let currentY = threatY + 45;
+      let historyY = threatY + 45;
       pdf.setFontSize(12);
       pdf.setFont("helvetica", "bold");
       pdf.setTextColor(15, 23, 42);
-      pdf.text("Analytical Visuals (Time-Series & Decadal)", 15, currentY);
+      pdf.text("Historical Driver & Event Attribution", 15, historyY);
+      
+      pdf.setFontSize(10);
+      pdf.setFont("helvetica", "normal");
+      pdf.setTextColor(51, 65, 85);
+      const driverText = eventsData?.drivers || "Historical emission levels are influenced by national industrial capacity, agricultural activity, and energy policy decisions.";
+      const splitDriver = pdf.splitTextToSize(`General Drivers: ${driverText}`, pageWidth - 30);
+      pdf.text(splitDriver, 15, historyY + 8);
+      
+      let timelineY = historyY + 8 + (splitDriver.length * 5) + 6;
+      if (eventsData?.timeline) {
+        eventsData.timeline.forEach((t) => {
+          pdf.setFont("helvetica", "bold");
+          pdf.setTextColor(15, 23, 42);
+          pdf.text(`• Year ${t.year} (${t.type === 'peak' ? 'Peak' : 'Lowest'}): ${t.title}`, 15, timelineY);
+          pdf.setFont("helvetica", "normal");
+          pdf.setTextColor(71, 85, 105);
+          const splitDesc = pdf.splitTextToSize(t.description, pageWidth - 35);
+          pdf.text(splitDesc, 19, timelineY + 5);
+          timelineY += 5 + (splitDesc.length * 5) + 3;
+        });
+      }
 
+      // PAGE 2: MITIGATION ROADMAP & DATA SUMMARY
+      pdf.addPage();
+      pdf.setFillColor(255, 255, 255);
+      pdf.rect(0, 0, pageWidth, 297, 'F');
+      
+      pdf.setFontSize(14);
+      pdf.setTextColor(15, 23, 42);
+      pdf.setFont("helvetica", "bold");
+      pdf.text("Climate Mitigation & Sustainability Roadmap", 15, 20);
+      
+      pdf.setDrawColor(226, 232, 240);
+      pdf.line(15, 25, pageWidth - 15, 25);
+      
+      let mitY = 35;
+      const mitigationPoints = eventsData?.mitigation || [
+        "Increase transition to renewable and zero-carbon energy grids.",
+        "Implement methane capture systems in landfills and agricultural farming.",
+        "Deploy precision agriculture technologies to optimize fertilizer application."
+      ];
+      
+      mitigationPoints.forEach((point, index) => {
+        pdf.setFont("helvetica", "bold");
+        pdf.setTextColor(16, 185, 129); // green bullet
+        pdf.text(`[Action Item ${index + 1}]`, 15, mitY);
+        pdf.setFont("helvetica", "normal");
+        pdf.setTextColor(51, 65, 85);
+        const splitMit = pdf.splitTextToSize(point, pageWidth - 45);
+        pdf.text(splitMit, 40, mitY);
+        mitY += (splitMit.length * 5) + 10;
+      });
+
+      let tableY = mitY + 12;
+      pdf.setFontSize(12);
+      pdf.setFont("helvetica", "bold");
+      pdf.setTextColor(15, 23, 42);
+      pdf.text("Appendix: Decadal Emission Metrics", 15, tableY);
+      
+      pdf.setDrawColor(226, 232, 240);
+      pdf.line(15, tableY + 3, pageWidth - 15, tableY + 3);
+      
+      pdf.setFontSize(10);
+      pdf.text("Decade", 20, tableY + 10);
+      pdf.text("Average Value (kt)", pageWidth / 2, tableY + 10);
+      pdf.text("Type", pageWidth - 50, tableY + 10);
+      
+      pdf.line(15, tableY + 13, pageWidth - 15, tableY + 13);
+      
+      let rowY = tableY + 20;
+      decadeData.forEach((row) => {
+        pdf.setFont("helvetica", "normal");
+        pdf.setTextColor(71, 85, 105);
+        pdf.text(row.name, 20, rowY);
+        pdf.text(`${row.avgValue.toLocaleString()} kt`, pageWidth / 2, rowY);
+        pdf.text(row.isForecast ? "Forecasted Period" : "Historical Record", pageWidth - 50, rowY);
+        rowY += 8;
+      });
+
+      // PAGE 3: ANALYTICAL VISUALS
+      pdf.addPage();
+      pdf.setFillColor(255, 255, 255);
+      pdf.rect(0, 0, pageWidth, 297, 'F');
+      
+      pdf.setFontSize(14);
+      pdf.setTextColor(15, 23, 42);
+      pdf.setFont("helvetica", "bold");
+      pdf.text("Analytical Visualizations", 15, 20);
+      
+      pdf.setDrawColor(226, 232, 240);
+      pdf.line(15, 25, pageWidth - 15, 25);
+      
+      let currentY = 32;
       if (areaChartRef.current && barChartRef.current) {
-        currentY += 5;
         const areaCanvas = await html2canvas(areaChartRef.current, { backgroundColor: '#0b1426', scale: 2 });
         const areaImgData = areaCanvas.toDataURL('image/png');
         const charWidth = pageWidth - 30;
@@ -207,17 +304,12 @@ const Predictor = () => {
         const areaHeight = charWidth * areaRatio;
 
         pdf.addImage(areaImgData, 'PNG', 15, currentY, charWidth, areaHeight);
-        currentY = currentY + areaHeight + 10;
+        currentY = currentY + areaHeight + 12;
 
         const barCanvas = await html2canvas(barChartRef.current, { backgroundColor: '#0b1426', scale: 2 });
         const barImgData = barCanvas.toDataURL('image/png');
         const barRatio = barCanvas.height / barCanvas.width;
         const barHeight = charWidth * barRatio;
-
-        if (currentY + barHeight > 280) {
-            pdf.addPage();
-            currentY = 15;
-        }
 
         pdf.addImage(barImgData, 'PNG', 15, currentY, charWidth, barHeight);
       }
@@ -484,6 +576,47 @@ const Predictor = () => {
                    </motion.div>
                 )}
               </AnimatePresence>
+
+              {prediction && eventsData && (
+                 <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="bg-[#0b1426] border border-sky-900/20 px-6 py-6 rounded-[28px] text-left shadow-2xl mt-4 space-y-4">
+                     <div className="flex items-center gap-3">
+                         <ShieldCheck className="w-5 h-5 text-emerald-400" />
+                         <h4 className="text-[10px] font-black tracking-[0.2em] uppercase text-emerald-400">Mitigation Strategy Advisor</h4>
+                     </div>
+                     <p className="text-[12px] text-slate-400 leading-relaxed font-medium">
+                        {eventsData.drivers}
+                     </p>
+                     <div className="space-y-2.5 pt-3 border-t border-sky-950/40">
+                        {eventsData.mitigation.map((m, idx) => (
+                           <div key={idx} className="flex gap-2 items-start text-[11px] text-slate-300">
+                              <span className="text-emerald-400 font-bold mt-[1px]">✓</span>
+                              <span className="leading-normal">{m}</span>
+                           </div>
+                        ))}
+                     </div>
+                 </motion.div>
+              )}
+
+              {eventsData && eventsData.timeline && eventsData.timeline.length > 0 && (
+                 <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="bg-[#081223] border border-sky-900/30 rounded-[32px] p-6 shadow-2xl text-left space-y-6 mt-4">
+                    <div className="flex items-center gap-3">
+                       <Clock className="w-5 h-5 text-[#0ea5e9]" />
+                       <h3 className="text-[10px] font-black tracking-[0.2em] text-white uppercase">Historical Event Timeline</h3>
+                    </div>
+                    
+                    <div className="relative border-l border-sky-900/50 ml-2 pl-5 space-y-6">
+                       {eventsData.timeline.map((event, idx) => (
+                          <div key={idx} className="relative">
+                             {/* Timeline Node Dot */}
+                             <div className={`absolute -left-[27px] top-1 w-3 h-3 rounded-full border-2 bg-[#030914] ${event.type === 'peak' ? 'border-red-500 shadow-[0_0_8px_#ef4444]' : 'border-emerald-400 shadow-[0_0_8px_#10b981]'}`} />
+                             <span className="text-[9.5px] font-bold text-slate-500 tracking-wider">{event.year}</span>
+                             <h4 className="text-[12.5px] font-extrabold text-white mt-1 leading-snug">{event.title}</h4>
+                             <p className="text-[11px] text-slate-400 mt-1.5 leading-relaxed">{event.description}</p>
+                          </div>
+                       ))}
+                    </div>
+                 </motion.div>
+              )}
           </div>
           
           {/* Right Column: Dual Charts */}
@@ -571,6 +704,51 @@ const Predictor = () => {
                         <span className="text-[10px] tracking-[0.2em] text-slate-400 font-bold uppercase mt-[1px]">FORECAST AVG (2020S)</span>
                      </div>
                   </div>
+              </div>
+
+              {/* Collapsible Data Table */}
+              <div className="bg-[#0b1426] border border-sky-900/40 rounded-[32px] p-8 shadow-2xl flex flex-col border-t-0 border-l-0 text-left mt-6">
+                  <div className="flex justify-between items-center w-full">
+                     <div>
+                        <h3 className="text-[13px] font-black tracking-[0.2em] uppercase text-white mb-1">PROJECTIONS & HISTORICAL RECORD TABLE</h3>
+                        <p className="text-[11px] text-slate-500 tracking-wide font-medium">Detailed year-by-year dataset values</p>
+                     </div>
+                     <button onClick={() => setShowDataTable(!showDataTable)} className="px-5 py-2 rounded-full border border-sky-500/20 bg-[#0c1830] hover:bg-[#0ea5e9]/10 text-sky-400 text-[9px] font-bold tracking-widest uppercase transition-colors shadow">
+                        {showDataTable ? "Hide Table" : "Show Table"}
+                     </button>
+                  </div>
+
+                  {showDataTable && combinedChartData.length > 0 && (
+                     <div className="mt-6 overflow-x-auto max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+                        <table className="w-full text-left text-[11.5px] border-collapse">
+                           <thead>
+                              <tr className="border-b border-sky-900/50 text-slate-500 font-bold uppercase tracking-wider text-[9px]">
+                                 <th className="pb-3 pl-2">Year</th>
+                                 <th className="pb-3">Value (kilotonnes)</th>
+                                 <th className="pb-3 text-right pr-2">Status</th>
+                              </tr>
+                           </thead>
+                           <tbody>
+                              {combinedChartData.map((row, idx) => {
+                                 const isForecast = row.forecastValue !== null && row.historyValue === null;
+                                 return (
+                                    <tr key={idx} className="border-b border-sky-950/20 hover:bg-sky-950/10 transition-colors">
+                                       <td className="py-3 pl-2 font-bold text-white">{row.Year}</td>
+                                       <td className="py-3 font-semibold text-slate-300">
+                                          {Number(row.rawValue || 0).toLocaleString(undefined, {minimumFractionDigits: 1, maximumFractionDigits: 1})} kt
+                                       </td>
+                                       <td className="py-3 text-right pr-2">
+                                          <span className={`px-3 py-0.5 rounded-full text-[9px] font-black tracking-wider uppercase ${isForecast ? 'bg-sky-950 text-sky-400 border border-sky-500/20' : 'bg-emerald-950 text-emerald-400 border border-emerald-500/20'}`}>
+                                             {isForecast ? "Forecast" : "Historical"}
+                                          </span>
+                                       </td>
+                                    </tr>
+                                 );
+                              })}
+                           </tbody>
+                        </table>
+                     </div>
+                  )}
               </div>
 
           </div>

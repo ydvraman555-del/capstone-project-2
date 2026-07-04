@@ -63,6 +63,7 @@
 Capstone Project second/
 ├── backend/
 │   ├── app.py                          # Flask app — ALL API routes + model loading
+│   ├── historical_events.json          # 📂 JSON database of historical events & mitigation pathways
 │   └── requirements.txt                # (duplicate of root requirements.txt)
 │
 ├── frontend/
@@ -80,37 +81,36 @@ Capstone Project second/
 │   ├── tailwind.config.js              # Tailwind config
 │   └── postcss.config.js              # PostCSS config
 │
+├── research_and_utilities/             # 📂 Reorganized research, notebooks, and utility tools
+│   ├── notebooks/
+│   │   └── Practice Capstone Project .ipynb # Jupyter Notebook (EDA + model training)
+│   ├── presentations/
+│   │   ├── GHG_Capstone_Presentation.pptx
+│   │   └── Global-GHG-Emissions-Intelligence-System_1.pptx
+│   ├── training_scripts/
+│   │   ├── retrain.py                  # Script to retrain RandomForest
+│   │   ├── compress_model.py           # Compresses random_forest.pkl
+│   │   ├── fast_loader.py              # Drop-in fast model loader
+│   │   ├── generate_presentation.py    # Auto-generates presentation slides
+│   │   └── verify_preds.py / extract_*.py # Auxiliary scripts
+│   ├── experimental_models/
+│   │   ├── model.pkl                   # Unused experimental models
+│   │   ├── scaler.pkl
+│   │   └── label_encoder.pkl
+│   └── debug_logs/
+│       └── *.txt                       # Debug and info dump files
+│
 ├── Global Green House Gas Emissions.csv  # 344KB — Source dataset
 ├── random_forest.pkl                     # 186MB — Trained RF model (LARGE!)
 ├── rf.pkl.gz                             # 39MB — Compressed version of the model
 ├── area_encoder.pkl                      # LabelEncoder for Area column
 ├── element_encoder.pkl                   # LabelEncoder for Element column
-├── model.pkl                             # 315KB — Alternate/older model
-├── scaler.pkl                            # StandardScaler (unused in current app.py)
-├── label_encoder.pkl                     # Another encoder (unused in current app.py)
 │
-├── retrain.py                           # Script to retrain RandomForest from CSV
 ├── wsgi.py                              # WSGI entry point (imports from backend/app.py)
 ├── Procfile                             # Render: gunicorn --bind 0.0.0.0:$PORT wsgi:app
 ├── build.sh                             # Render build: npm install + vite build + pip install
 ├── requirements.txt                     # Root Python deps (used by Render)
 ├── .python-version                      # "3.12.x"
-│
-├── generate_presentation.py             # Auto-generates PPTX presentations
-├── GHG_Capstone_Presentation.pptx       # Generated presentation
-├── Global-GHG-Emissions-Intelligence-System_1.pptx  # 23MB presentation
-├── Practice Capstone Project .ipynb      # Jupyter notebook (EDA + model training)
-│
-├── extract_code.py                      # Utility: extract code from notebook
-├── extract_df.py                        # Utility: extract dataframe info
-├── extract_dump.py                      # Utility: extract pickle dump calls
-├── inspect_models.py                    # Utility: inspect pkl files
-├── verify_preds.py                      # Utility: verify predictions
-│
-├── compress_model.py                    # ⚡ Compresses random_forest.pkl → rf.pkl.gz
-├── fast_loader.py                       # ⚡ Drop-in fast model loader (NOT yet wired into app.py)
-│
-├── *.txt                                # Various debug/info dumps (cols, model info, etc.)
 └── .gitignore
 ```
 
@@ -157,6 +157,10 @@ Capstone Project second/
 ### `GET /forecast?area=India&element=Emissions (CO2)`
 - **Response:** `{ "history": [{Year, Value}...], "forecast": [{Year, Value}...], "status": "success" }`
 - Forecast covers years **2022–2031**
+
+### `GET /events?area=India&element=Emissions (CO2)`
+- **Response:** `{ "status": "success", "drivers": "...", "timeline": [{year, type, title, description}...], "mitigation": [...] }`
+- Returns historical event attributions (peaks, valleys) and climate mitigation recommendations.
 
 ### `GET /metadata`
 - **Response:** `{ "areas": [...], "elements": [...], "years": [1990..2031] }`
@@ -310,9 +314,9 @@ python retrain.py
 
 10. **Prediction values are clamped to ≥0** — `max(0, dynamic_pred)` ensures no negative emission predictions.
 
-11. **Cold start optimization is READY but NOT wired in** — `fast_loader.py` and `compress_model.py` exist in root. When ready, replace the model loading block in `backend/app.py` with:
+11. **Cold start optimization is READY but NOT wired in** — `fast_loader.py` and `compress_model.py` exist in `research_and_utilities/training_scripts/`. When ready, replace the model loading block in `backend/app.py` with:
     ```python
-    import sys; sys.path.insert(0, os.path.dirname(BASE_DIR))
+    import sys; sys.path.insert(0, os.path.join(os.path.dirname(BASE_DIR), 'research_and_utilities', 'training_scripts'))
     from fast_loader import load_all_artifacts
     model, area_encoder, element_encoder = load_all_artifacts()
     ```

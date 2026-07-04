@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Globe, Activity, ShieldCheck, Zap, ArrowRight } from 'lucide-react';
+import { Globe, Activity, ShieldCheck, Zap, ArrowRight, Database, Cpu, FileText, Layers, Sliders, Radio } from 'lucide-react';
 
 const AnimatedBackground = () => (
     <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
@@ -150,6 +150,82 @@ const Landing = () => {
             </p>
           </motion.div>
 
+        </motion.div>
+
+        {/* Section: System Pipeline & How It Works */}
+        <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }} className="w-full text-left space-y-8 mt-12 mb-20 relative z-20">
+          <div className="flex flex-col items-center text-center">
+            <h2 className="text-[11.5px] font-black tracking-[0.25em] text-[#0ea5e9] uppercase mb-3">TECHNICAL WORKFLOW</h2>
+            <h3 className="text-3xl font-black text-white tracking-tight">How the Intelligence Core Works</h3>
+            <p className="text-[#1a4b6c] max-w-xl text-[13px] font-medium mt-2">Our system combines historical observation lookups with hybrid machine learning models to forecast global climate footprints.</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="bg-[#050c18] border border-sky-900/10 rounded-[24px] p-6 shadow-xl flex gap-4">
+              <div className="w-10 h-10 rounded-xl border border-sky-900/40 bg-[#081326] flex items-center justify-center shrink-0">
+                <Database className="w-[16px] h-[16px] text-[#0ea5e9]" />
+              </div>
+              <div className="space-y-1">
+                <h4 className="text-[14px] font-bold text-white uppercase tracking-wider">1. Data Ingestion & Cleaning</h4>
+                <p className="text-slate-500 text-[12px] leading-relaxed">Melts FAO wide-format CSV into long-format datasets, pre-encodes geographic areas and emission elements using LabelEncoders, and handles missing observations.</p>
+              </div>
+            </div>
+
+            <div className="bg-[#050c18] border border-sky-900/10 rounded-[24px] p-6 shadow-xl flex gap-4">
+              <div className="w-10 h-10 rounded-xl border border-sky-900/40 bg-[#081326] flex items-center justify-center shrink-0">
+                <Cpu className="w-[16px] h-[16px] text-[#0ea5e9]" />
+              </div>
+              <div className="space-y-1">
+                <h4 className="text-[14px] font-bold text-white uppercase tracking-wider">2. Hybrid ML Prediction</h4>
+                <p className="text-slate-500 text-[12px] leading-relaxed">Uses a Random Forest Regressor for non-linear baselines, integrated with real-time linear regression (numpy polyfit) computed over the last 10 historical years for trend slope corrections.</p>
+              </div>
+            </div>
+
+            <div className="bg-[#050c18] border border-sky-900/10 rounded-[24px] p-6 shadow-xl flex gap-4">
+              <div className="w-10 h-10 rounded-xl border border-sky-900/40 bg-[#081326] flex items-center justify-center shrink-0">
+                <FileText className="w-[16px] h-[16px] text-[#0ea5e9]" />
+              </div>
+              <div className="space-y-1">
+                <h4 className="text-[14px] font-bold text-white uppercase tracking-wider">3. Threat Analytics & Export</h4>
+                <p className="text-slate-500 text-[12px] leading-relaxed">Segregates results into risk bounds, identifies major historical causes (like deforestation or industrial transitions), and compiles downloadable PDF reports.</p>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Section: Future Scope & Research Roadmap */}
+        <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }} className="w-full text-left space-y-8 mb-24 relative z-20">
+          <div className="flex flex-col items-center text-center">
+            <h2 className="text-[11.5px] font-black tracking-[0.25em] text-[#0ea5e9] uppercase mb-3">FUTURE ROADMAP</h2>
+            <h3 className="text-3xl font-black text-white tracking-tight">Advanced Research Roadmap</h3>
+            <p className="text-[#1a4b6c] max-w-xl text-[13px] font-medium mt-2">Integrating advanced deep learning architectures and real-time streaming platforms for next-generation forecasting.</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="bg-gradient-to-b from-[#050c18] to-[#030710] border border-sky-900/10 rounded-[24px] p-6 shadow-xl space-y-4">
+              <div className="w-10 h-10 rounded-xl border border-sky-900/40 bg-[#081326] flex items-center justify-center">
+                <Layers className="w-[16px] h-[16px] text-[#0ea5e9]" />
+              </div>
+              <h4 className="text-[15px] font-bold text-white uppercase tracking-wider">Deep Learning Sequence Models</h4>
+              <p className="text-slate-500 text-[12px] leading-relaxed">Transitioning to deep learning time-series models (like LSTMs or Temporal Fusion Transformers) to capture complex seasonal climate cycles and decadal changes.</p>
+            </div>
+
+            <div className="bg-gradient-to-b from-[#050c18] to-[#030710] border border-sky-900/10 rounded-[24px] p-6 shadow-xl space-y-4">
+              <div className="w-10 h-10 rounded-xl border border-sky-900/40 bg-[#081326] flex items-center justify-center">
+                <Sliders className="w-[16px] h-[16px] text-[#0ea5e9]" />
+              </div>
+              <h4 className="text-[15px] font-bold text-white uppercase tracking-wider">Policy Sandbox Simulations</h4>
+              <p className="text-slate-500 text-[12px] leading-relaxed">Enabling users to simulate policy interventions (e.g. reforestation rates, tax sliders) to see real-time impact on predicted future emission trajectories.</p>
+            </div>
+
+            <div className="bg-gradient-to-b from-[#050c18] to-[#030710] border border-sky-900/10 rounded-[24px] p-6 shadow-xl space-y-4">
+              <div className="w-10 h-10 rounded-xl border border-sky-900/40 bg-[#081326] flex items-center justify-center">
+                <Radio className="w-[16px] h-[16px] text-[#0ea5e9]" />
+              </div>
+              <h4 className="text-[15px] font-bold text-white uppercase tracking-wider">Satellite Observation Feeds</h4>
+              <p className="text-slate-500 text-[12px] leading-relaxed">Integrating live feeds from ESA Sentinel-5P and NASA OCO-2 to overlay satellite readings against predictions, providing real-time data validation.</p>
+            </div>
+          </div>
         </motion.div>
 
         {/* Launch Console Button & Footer Stats */}
