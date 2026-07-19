@@ -64,8 +64,7 @@ This allows the server to start up instantly (<1s) and immediately answer Uptime
 Capstone Project second/
 ├── backend/
 │   ├── app.py                          # Flask app — ALL API routes + model loading
-│   ├── historical_events.json          # 📂 JSON database of historical events & mitigation pathways
-│   └── requirements.txt                # (duplicate of root requirements.txt)
+│   └── historical_events.json          # 📂 JSON database of historical events & mitigation pathways
 │
 ├── frontend/
 │   ├── src/
@@ -95,12 +94,6 @@ Capstone Project second/
 │   │   ├── fast_loader.py              # Drop-in fast model loader
 │   │   ├── generate_presentation.py    # Auto-generates presentation slides
 │   │   └── verify_preds.py / extract_*.py # Auxiliary scripts
-│   ├── experimental_models/
-│   │   ├── model.pkl                   # Unused experimental models
-│   │   ├── scaler.pkl
-│   │   └── label_encoder.pkl
-│   └── debug_logs/
-│       └── *.txt                       # Debug and info dump files
 │
 ├── Global Green House Gas Emissions.csv  # 344KB — Source dataset
 ├── random_forest.pkl                     # 186MB — Trained RF model (LARGE!)
@@ -296,7 +289,7 @@ python retrain.py
 
 ## 10. Key Gotchas & Notes
 
-1. **Model file is HUGE (186MB)** — `random_forest.pkl` will be slow to load on cold starts. The compressed `rf.pkl.gz` (39MB) exists but is NOT used by the app.
+1. **Compressed Model Used (39MB)** — The application now primarily loads `rf.pkl.gz` (39MB) instead of `random_forest.pkl` (186MB) to ensure fast loading times on startup.
 
 2. **Feature column order matters** — Training uses `['Area', 'Year', 'Element']`. Prediction must match this exact order or results will be wrong.
 
@@ -304,9 +297,9 @@ python retrain.py
 
 4. **Flask serves both API and frontend** — The static_folder points to `frontend/dist/`. If the frontend isn't built, the catch-all route returns a 500.
 
-5. **Unused pickle files** — `model.pkl`, `scaler.pkl`, `label_encoder.pkl` are artifacts from earlier experiments. Only `random_forest.pkl`, `area_encoder.pkl`, `element_encoder.pkl` are actively used.
+5. **Unused pickle files deleted** — Experimental model files (`model.pkl`, `scaler.pkl`, `label_encoder.pkl`) have been deleted from the repository to clean up disk space.
 
-6. **Backend requirements.txt exists in TWO places** — Root `requirements.txt` and `backend/requirements.txt` are identical. Render uses the root one.
+6. **Backend requirements.txt deleted** — Previously, `backend/requirements.txt` existed as a duplicate, which has been removed. Render uses the root `requirements.txt` file.
 
 7. **Vite build command is explicit** — `package.json` uses `node node_modules/vite/bin/vite.js build` instead of `npx vite build` to avoid issues on Render.
 
