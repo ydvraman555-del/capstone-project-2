@@ -12,11 +12,12 @@
 | Frontend | Vercel   | React SPA deployed separately            |
 | Backend  | Render   | Free tier — cold starts after ~15 min idle |
 
-**Cold Start Problem:** Render free tier spins down → reloading 186MB model takes ~1 min. **UptimeRobot** is used to ping the backend every 5 min to keep it warm (hit `/metadata` endpoint).
+**Cold Start Problem & Optimization:** Render free tier spins down. Previously, reloading the 186MB model at startup took ~1 min, causing pings from **UptimeRobot** to time out with `503 Service Unavailable`.
+To resolve this:
+1. **Lazy Loading:** ML artifacts (model and encoders) are loaded lazily and thread-safely on the first prediction/forecast request.
+2. **Compressed Model:** The application uses `rf.pkl.gz` (~39MB) instead of the 186MB uncompressed model, reducing loading time to ~15-20 seconds.
+This allows the server to start up instantly (<1s) and immediately answer UptimeRobot ping requests (hitting `/metadata` or `/`) with a `200 OK`.
 
-**Ready-to-use optimization files** (not yet implemented in app.py):
-- `compress_model.py` — re-compress model to .gz
-- `fast_loader.py` — drop-in loader that uses rf.pkl.gz (~39MB) instead of random_forest.pkl (~186MB)
 
 ## 1. Project Overview
 
@@ -192,15 +193,13 @@ This is the **core intelligence** — NOT a simple model.predict():
 5. **Extreme fallback:** Find closest historical data point
 
 ### Pickle Files Used by app.py
-| File                  | What it is                          | Loaded? |
-|-----------------------|-------------------------------------|---------|
-| `random_forest.pkl`   | Trained RF model (186MB)            | ✅ YES  |
-| `area_encoder.pkl`    | LabelEncoder for Area               | ✅ YES  |
-| `element_encoder.pkl` | LabelEncoder for Element            | ✅ YES  |
+| `rf.pkl.gz`           | Compressed RF model (39MB)          | ✅ YES (Lazy, primary) |
+| `random_forest.pkl`   | Trained RF model (186MB)            | ✅ YES (Lazy, fallback) |
+| `area_encoder.pkl`    | LabelEncoder for Area               | ✅ YES (Lazy)  |
+| `element_encoder.pkl` | LabelEncoder for Element            | ✅ YES (Lazy)  |
 | `model.pkl`           | Older/alternate model (315KB)       | ❌ NO   |
 | `scaler.pkl`          | StandardScaler                      | ❌ NO   |
 | `label_encoder.pkl`   | Another label encoder               | ❌ NO   |
-| `rf.pkl.gz`           | Compressed RF (for distribution)    | ❌ NO   |
 
 ---
 
@@ -317,14 +316,9 @@ python retrain.py
 
 10. **Prediction values are clamped to ≥0** — `max(0, dynamic_pred)` ensures no negative emission predictions.
 
-11. **Cold start optimization is READY but NOT wired in** — `fast_loader.py` and `compress_model.py` exist in `research_and_utilities/training_scripts/`. When ready, replace the model loading block in `backend/app.py` with:
-    ```python
-    import sys; sys.path.insert(0, os.path.join(os.path.dirname(BASE_DIR), 'research_and_utilities', 'training_scripts'))
-    from fast_loader import load_all_artifacts
-    model, area_encoder, element_encoder = load_all_artifacts()
-    ```
+11. **Cold start optimization is fully wired in** — The model loading in `app.py` has been optimized. It now loads `rf.pkl.gz` (39MB) instead of the 186MB `random_forest.pkl`, and uses a thread-safe lazy-loading function `load_artifacts_lazy()` which is only invoked on prediction/forecast requests.
 
-12. **UptimeRobot keeps Render warm** — Pings `GET /metadata` every 5 min to prevent cold starts. If Render still sleeps, the fast_loader fallback reduces cold start from ~60s to ~20s.
+12. **UptimeRobot pings succeed instantly** — Since `app.py` loads the model lazily, the server starts up in <1s and answers UptimeRobot pings to `/metadata` or `/` immediately (without waiting for the model to load). This prevents UptimeRobot timeouts and 503 errors.
 
 13. **Frontend on Vercel, Backend on Render** — These are separate deployments. Frontend calls backend API via absolute URL (must be configured in frontend env/config).
 
@@ -337,3 +331,6 @@ python retrain.py
 17. **Vercel Client-Side Routing Refresh Fix** — Added `frontend/vercel.json` with a rewrite rule to redirect all routes to `index.html`. This prevents Vercel from returning a `404: NOT_FOUND` error when refreshing a subpage like `/predict`.
 
 18. **PDF Export Overlapping Fix** — Set the font size of climate mitigation roadmap items to `10` and adjusted their horizontal spacing and wrapping limits in `Predictor.jsx` to prevent the `[Action Item X]` label from overlapping with the action text.
+
+19. **UptimeRobot 503 Timeout Fix (Lazy Loading)** — Converted model loading to a thread-safe lazy-loaded process in `backend/app.py`. The model is loaded from `rf.pkl.gz` (fallback to `random_forest.pkl`) only when prediction or forecast is requested, preventing the server from blocking during startup and ensuring that health pings (e.g. UptimeRobot) succeed instantly.
+

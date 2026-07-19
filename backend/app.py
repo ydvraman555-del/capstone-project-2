@@ -37,17 +37,40 @@ except Exception as e:
     print(f"ERROR loading historical events: {e}")
     events_db = {}
 
-# Load Artifacts
-try:
-    with open(MODEL_PATH, 'rb') as f:
-        model = NumPyRenameUnpickler(f).load()
-    with open(AREA_ENCODER_PATH, 'rb') as f:
-        area_encoder = NumPyRenameUnpickler(f).load()
-    with open(ELEMENT_ENCODER_PATH, 'rb') as f:
-        element_encoder = NumPyRenameUnpickler(f).load()
-    print("SUCCESS: Model and Encoders loaded.")
-except Exception as e:
-    print(f"ERROR loading artifacts: {e}")
+import threading
+
+# Lazy loading variables for ML artifacts
+model = None
+area_encoder = None
+element_encoder = None
+model_lock = threading.Lock()
+
+def load_artifacts_lazy():
+    global model, area_encoder, element_encoder
+    if model is None or area_encoder is None or element_encoder is None:
+        with model_lock:
+            if model is None or area_encoder is None or element_encoder is None:
+                import gzip
+                MODEL_GZ_PATH = os.path.join(os.path.dirname(BASE_DIR), 'rf.pkl.gz')
+                try:
+                    if os.path.exists(MODEL_GZ_PATH):
+                        print("Loading compressed model from rf.pkl.gz...")
+                        with gzip.open(MODEL_GZ_PATH, 'rb') as f:
+                            model = NumPyRenameUnpickler(f).load()
+                    else:
+                        print("Loading original model from random_forest.pkl...")
+                        with open(MODEL_PATH, 'rb') as f:
+                            model = NumPyRenameUnpickler(f).load()
+                            
+                    with open(AREA_ENCODER_PATH, 'rb') as f:
+                        area_encoder = NumPyRenameUnpickler(f).load()
+                    with open(ELEMENT_ENCODER_PATH, 'rb') as f:
+                        element_encoder = NumPyRenameUnpickler(f).load()
+                    print("SUCCESS: Model and Encoders loaded (lazy).")
+                except Exception as e:
+                    print(f"ERROR loading artifacts (lazy): {e}")
+                    raise e
+
 
 
 # Load Historical Data
@@ -75,6 +98,7 @@ def get_smart_prediction(area, element, target_year):
             
     # If the year is in the past but missing from CSV, or in the future, use the model
     try:
+        load_artifacts_lazy()
         enc_area = area_encoder.transform([area])[0]
         enc_element = element_encoder.transform([element])[0]
         
