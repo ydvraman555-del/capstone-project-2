@@ -1,6 +1,6 @@
 # 🧠 Brain — Capstone Project: Global GHG Emissions Intelligence System
 
-> **Last updated:** 2026-07-03
+> **Last updated:** 2026-07-19
 > **Purpose:** Quick-reference knowledge base so the entire codebase doesn't need to be re-read on every session.
 
 ---
@@ -330,3 +330,6 @@ python retrain.py
 14. **NumPy 1.x / 2.x Compatibility Patch** — A custom `NumPyRenameUnpickler` subclass of `pickle.Unpickler` has been implemented in `backend/app.py` and `fast_loader.py` to intercept module loads and replace `numpy._core` with `numpy.core` on-the-fly. This scopes the change completely within the pickle process and avoids modifying the global `sys.modules`, which previously caused a Gunicorn worker segmentation fault.
 
 15. **PDF Export Variable Fix** — Fixed a ReferenceError in `downloadPDF` inside `Predictor.jsx` where the undefined variable `trend2031` was referenced instead of the correct `trendVariable`.
+
+16. **Scroll to Top on Route Change** — Added a `useEffect` inside `AnimatedRoutes` (in `App.jsx`) to scroll the window to the top (`window.scrollTo(0, 0)`) when the route path changes, preventing the page from loading scrolled-down when transitioning between pages.
+
