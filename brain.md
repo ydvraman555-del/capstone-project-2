@@ -334,3 +334,4 @@ python retrain.py
 
 19. **UptimeRobot 503 Timeout Fix (Lazy Loading)** — Converted model loading to a thread-safe lazy-loaded process in `backend/app.py`. The model is loaded from `rf.pkl.gz` (fallback to `random_forest.pkl`) only when prediction or forecast is requested, preventing the server from blocking during startup and ensuring that health pings (e.g. UptimeRobot) succeed instantly.
 
+20. **Root Route 500 Error Fix** — Modified the root route handler `serve(path)` in `backend/app.py` so that it returns a healthy `200 OK` JSON API status if the frontend static assets (`index.html`) are missing on Render. This avoids returning a `500 Internal Server Error` to UptimeRobot when pinging the root URL.
