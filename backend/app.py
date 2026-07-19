@@ -228,7 +228,7 @@ def forecast():
     hist_data = df_history[(df_history['Area'] == area) & (df_history['Element'] == element)].sort_values('Year')
     hist_list = hist_data[['Year', 'Value']].to_dict('records')
     forecast_list = []
-    for year in range(2022, 2032):
+    for year in range(2022, 2051):
         forecast_list.append({'Year': year, 'Value': get_smart_prediction(area, element, year)})
     return jsonify({'history': hist_list, 'forecast': forecast_list, 'status': 'success'})
 
@@ -237,7 +237,7 @@ def get_metadata():
     return jsonify({
         'areas': sorted(list(df_history['Area'].unique())),
         'elements': sorted(list(df_history['Element'].unique())),
-        'years': list(range(1990, 2032))
+        'years': list(range(1990, 2051))
     })
 
 @app.route('/', defaults={'path': ''})

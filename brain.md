@@ -21,7 +21,7 @@ This allows the server to start up instantly (<1s) and immediately answer Uptime
 
 ## 1. Project Overview
 
-**What it is:** A full-stack ML-powered web app that predicts and visualizes Global Greenhouse Gas (GHG) Emissions (CH4, CO2, N2O) by country/area, with historical data + future forecasting (up to 2031).
+**What it is:** A full-stack ML-powered web app that predicts and visualizes Global Greenhouse Gas (GHG) Emissions (CH4, CO2, N2O) by country/area, with historical data + future forecasting (up to 2050).
 
 **Deployment target:** Render (Web Service)
 **Python version:** 3.12.x (see `.python-version`)
@@ -158,14 +158,14 @@ Capstone Project second/
 
 ### `GET /forecast?area=India&element=Emissions (CO2)`
 - **Response:** `{ "history": [{Year, Value}...], "forecast": [{Year, Value}...], "status": "success" }`
-- Forecast covers years **2022–2031**
+- Forecast covers years **2022–2050**
 
 ### `GET /events?area=India&element=Emissions (CO2)`
 - **Response:** `{ "status": "success", "drivers": "...", "timeline": [{year, type, title, description}...], "mitigation": [...] }`
 - Returns historical event attributions (peaks, valleys) and climate mitigation recommendations.
 
 ### `GET /metadata`
-- **Response:** `{ "areas": [...], "elements": [...], "years": [1990..2031] }`
+- **Response:** `{ "areas": [...], "elements": [...], "years": [1990..2050] }`
 
 ### `GET /` and `GET /<path>`
 - Serves the built React frontend from `frontend/dist/`
@@ -335,3 +335,6 @@ python retrain.py
 19. **UptimeRobot 503 Timeout Fix (Lazy Loading)** — Converted model loading to a thread-safe lazy-loaded process in `backend/app.py`. The model is loaded from `rf.pkl.gz` (fallback to `random_forest.pkl`) only when prediction or forecast is requested, preventing the server from blocking during startup and ensuring that health pings (e.g. UptimeRobot) succeed instantly.
 
 20. **Root Route 500 Error Fix** — Modified the root route handler `serve(path)` in `backend/app.py` so that it returns a healthy `200 OK` JSON API status if the frontend static assets (`index.html`) are missing on Render. This avoids returning a `500 Internal Server Error` to UptimeRobot when pinging the root URL.
+
+21. **Forecast Horizon Extension (2050)** — Extended the forecast years range in `backend/app.py` from 2031 to 2050 by changing `range(2022, 2032)` and `range(1990, 2032)` to `2051` limits. Also updated `Predictor.jsx` to dynamically pull the final forecast year for the dashboard outlook label.
+

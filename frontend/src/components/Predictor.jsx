@@ -409,7 +409,9 @@ const Predictor = () => {
   let isFreshPrediction = prediction && prediction.year === formData.Year && prediction.area === formData.Area && prediction.element === formData.Element;
   let trendLabel = isFreshPrediction 
     ? (isHistorical ? `${formData.Year} Baseline` : `${formData.Year} Trend`) 
-    : "2031 Outlook";
+    : (forecastData.forecast && forecastData.forecast.length > 0
+        ? `${forecastData.forecast[forecastData.forecast.length - 1].Year} Outlook`
+        : "2050 Outlook");
 
 
   if (forecastData.history && forecastData.history.length > 0) {
