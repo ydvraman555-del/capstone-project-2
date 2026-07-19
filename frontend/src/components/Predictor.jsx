@@ -246,14 +246,15 @@ const Predictor = () => {
         "Deploy precision agriculture technologies to optimize fertilizer application."
       ];
       
+      pdf.setFontSize(10);
       mitigationPoints.forEach((point, index) => {
         pdf.setFont("helvetica", "bold");
         pdf.setTextColor(16, 185, 129); // green bullet
         pdf.text(`[Action Item ${index + 1}]`, 15, mitY);
         pdf.setFont("helvetica", "normal");
         pdf.setTextColor(51, 65, 85);
-        const splitMit = pdf.splitTextToSize(point, pageWidth - 45);
-        pdf.text(splitMit, 40, mitY);
+        const splitMit = pdf.splitTextToSize(point, pageWidth - 60);
+        pdf.text(splitMit, 45, mitY);
         mitY += (splitMit.length * 5) + 10;
       });
 

@@ -336,4 +336,4 @@ python retrain.py
 
 17. **Vercel Client-Side Routing Refresh Fix** — Added `frontend/vercel.json` with a rewrite rule to redirect all routes to `index.html`. This prevents Vercel from returning a `404: NOT_FOUND` error when refreshing a subpage like `/predict`.
 
-
+18. **PDF Export Overlapping Fix** — Set the font size of climate mitigation roadmap items to `10` and adjusted their horizontal spacing and wrapping limits in `Predictor.jsx` to prevent the `[Action Item X]` label from overlapping with the action text.
