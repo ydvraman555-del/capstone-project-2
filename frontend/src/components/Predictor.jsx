@@ -104,6 +104,11 @@ const Predictor = () => {
 
   const handlePredict = async (e) => {
     e.preventDefault();
+    const yearVal = parseInt(formData.Year);
+    if (isNaN(yearVal) || yearVal < 1990 || yearVal > 2031) {
+        alert("Please enter a valid target year between 1990 and 2031.");
+        return;
+    }
     setLoading(true);
     try {
       const response = await axios.post(`${API_URL}/predict`, formData);
@@ -411,7 +416,7 @@ const Predictor = () => {
     ? (isHistorical ? `${formData.Year} Baseline` : `${formData.Year} Trend`) 
     : (forecastData.forecast && forecastData.forecast.length > 0
         ? `${forecastData.forecast[forecastData.forecast.length - 1].Year} Outlook`
-        : "2050 Outlook");
+        : "2031 Outlook");
 
 
   if (forecastData.history && forecastData.history.length > 0) {
@@ -534,7 +539,33 @@ const Predictor = () => {
 
                           <div className="space-y-3">
                               <label className="text-[9px] text-slate-500 tracking-[0.25em] font-bold uppercase block pl-1">Forecast Target Year</label>
-                              <input type="number" className="w-full bg-[#030914] border border-sky-900/40 rounded-[14px] p-[20px] font-black text-[13px] tracking-wide outline-none text-white pl-6 transition-colors" value={formData.Year} onChange={(e) => setFormData({...formData, Year: e.target.value})} />
+                              <input 
+                                type="number" 
+                                min={1990}
+                                max={2031}
+                                className="w-full bg-[#030914] border border-sky-900/40 rounded-[14px] p-[20px] font-black text-[13px] tracking-wide outline-none text-white pl-6 transition-colors" 
+                                value={formData.Year} 
+                                onChange={(e) => {
+                                  const val = e.target.value;
+                                  if (val === '') {
+                                    setFormData({...formData, Year: ''});
+                                    return;
+                                  }
+                                  if (/^\d{0,4}$/.test(val)) {
+                                    setFormData({...formData, Year: val});
+                                  }
+                                }} 
+                                onBlur={(e) => {
+                                  const val = parseInt(e.target.value);
+                                  if (isNaN(val)) {
+                                    setFormData({...formData, Year: '2024'});
+                                  } else if (val < 1990) {
+                                    setFormData({...formData, Year: '1990'});
+                                  } else if (val > 2031) {
+                                    setFormData({...formData, Year: '2031'});
+                                  }
+                                }}
+                              />
                           </div>
                       </div>
                       
