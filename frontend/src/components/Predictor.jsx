@@ -551,8 +551,19 @@ const Predictor = () => {
                                     setFormData({...formData, Year: ''});
                                     return;
                                   }
-                                  if (/^\d{0,4}$/.test(val)) {
-                                    setFormData({...formData, Year: val});
+                                  const num = parseInt(val);
+                                  if (!isNaN(num)) {
+                                    if (val.length >= 4) {
+                                      if (num > 2031) {
+                                        setFormData({...formData, Year: '2031'});
+                                      } else if (num < 1990) {
+                                        setFormData({...formData, Year: '1990'});
+                                      } else {
+                                        setFormData({...formData, Year: val.slice(0, 4)});
+                                      }
+                                    } else {
+                                      setFormData({...formData, Year: val});
+                                    }
                                   }
                                 }} 
                                 onBlur={(e) => {

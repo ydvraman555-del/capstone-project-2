@@ -331,6 +331,4 @@ python retrain.py
 
 21. **Forecast Horizon Range (2031)** — Locked the forecast years range in `backend/app.py` back to 2031 (`range(2022, 2032)` and `range(1990, 2032)`) to align with data boundaries.
 
-22. **Year Input Bounds Validation** — Implemented strict validation on the forecast year input in `Predictor.jsx`. Users are prevented from typing values longer than 4 digits, input values are auto-clamped to the `[1990, 2031]` range on blur, and form submissions are blocked with an alert if a year outside these bounds is submitted.
-
-
+22. **Year Input Bounds Validation** — Implemented strict validation on the forecast year input in `Predictor.jsx`. Inputs are instantly clamped/snapped back to `2031` (or `1990`) on keystroke if a user types or pastes a 4+ digit number outside the bounds. Values are also clamped on blur, and form submissions are blocked with an alert if a year outside these bounds is submitted.
