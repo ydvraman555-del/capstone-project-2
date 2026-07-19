@@ -128,7 +128,7 @@ const Landing = () => {
             </p>
           </motion.div>
           
-          <motion.div whileHover={{ scale: 1.03, y: -8, boxShadow: "0 25px 50px -12px rgba(14, 165, 233, 0.15)" }} className="bg-gradient-to-b from-[#050c18] to-[#030710] border border-sky-900/20 rounded-[28px] p-8 transition-colors text-left shadow-2xl hover:border-sky-900/50 group cursor-pointer">
+          <motion.div whileHover={{ scale: 1.03, y: -8, rotateX: 2, rotateY: 0, boxShadow: "0 25px 50px -12px rgba(14, 165, 233, 0.15)" }} className="bg-gradient-to-b from-[#050c18] to-[#030710] border border-sky-900/20 rounded-[28px] p-8 transition-colors text-left shadow-2xl hover:border-sky-900/50 group cursor-pointer">
             <div className="w-[45px] h-[45px] rounded-xl border border-sky-900/40 bg-[#081326] flex items-center justify-center mb-6 group-hover:bg-[#0a1b35] transition-colors relative overflow-hidden">
               <div className="absolute inset-0 bg-[#0ea5e9]/10 translate-y-[100%] group-hover:translate-y-0 transition-transform duration-300" />
               <Activity className="w-[18px] h-[18px] text-[#0ea5e9] relative z-10" />
@@ -160,8 +160,8 @@ const Landing = () => {
             <p className="text-[#1a4b6c] max-w-xl text-[13px] font-medium mt-2">Our system combines historical observation lookups with hybrid machine learning models to forecast global climate footprints.</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-[#050c18] border border-sky-900/10 rounded-[24px] p-6 shadow-xl flex gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 perspective-[1000px]">
+            <motion.div whileHover={{ scale: 1.03, y: -6, rotateX: 2, rotateY: -2, boxShadow: "0 20px 40px -12px rgba(14, 165, 233, 0.12)" }} className="bg-[#050c18] border border-sky-900/10 rounded-[24px] p-6 shadow-xl flex gap-4 cursor-pointer transition-colors duration-300 hover:border-sky-900/40">
               <div className="w-10 h-10 rounded-xl border border-sky-900/40 bg-[#081326] flex items-center justify-center shrink-0">
                 <Database className="w-[16px] h-[16px] text-[#0ea5e9]" />
               </div>
@@ -169,9 +169,9 @@ const Landing = () => {
                 <h4 className="text-[14px] font-bold text-white uppercase tracking-wider">1. Data Ingestion & Cleaning</h4>
                 <p className="text-slate-500 text-[12px] leading-relaxed">Melts FAO wide-format CSV into long-format datasets, pre-encodes geographic areas and emission elements using LabelEncoders, and handles missing observations.</p>
               </div>
-            </div>
+            </motion.div>
 
-            <div className="bg-[#050c18] border border-sky-900/10 rounded-[24px] p-6 shadow-xl flex gap-4">
+            <motion.div whileHover={{ scale: 1.03, y: -6, rotateX: 2, rotateY: 0, boxShadow: "0 20px 40px -12px rgba(14, 165, 233, 0.12)" }} className="bg-[#050c18] border border-sky-900/10 rounded-[24px] p-6 shadow-xl flex gap-4 cursor-pointer transition-colors duration-300 hover:border-sky-900/40">
               <div className="w-10 h-10 rounded-xl border border-sky-900/40 bg-[#081326] flex items-center justify-center shrink-0">
                 <Cpu className="w-[16px] h-[16px] text-[#0ea5e9]" />
               </div>
@@ -179,9 +179,9 @@ const Landing = () => {
                 <h4 className="text-[14px] font-bold text-white uppercase tracking-wider">2. Hybrid ML Prediction</h4>
                 <p className="text-slate-500 text-[12px] leading-relaxed">Uses a Random Forest Regressor for non-linear baselines, integrated with real-time linear regression (numpy polyfit) computed over the last 10 historical years for trend slope corrections.</p>
               </div>
-            </div>
+            </motion.div>
 
-            <div className="bg-[#050c18] border border-sky-900/10 rounded-[24px] p-6 shadow-xl flex gap-4">
+            <motion.div whileHover={{ scale: 1.03, y: -6, rotateX: 2, rotateY: 2, boxShadow: "0 20px 40px -12px rgba(14, 165, 233, 0.12)" }} className="bg-[#050c18] border border-sky-900/10 rounded-[24px] p-6 shadow-xl flex gap-4 cursor-pointer transition-colors duration-300 hover:border-sky-900/40">
               <div className="w-10 h-10 rounded-xl border border-sky-900/40 bg-[#081326] flex items-center justify-center shrink-0">
                 <FileText className="w-[16px] h-[16px] text-[#0ea5e9]" />
               </div>
@@ -189,7 +189,7 @@ const Landing = () => {
                 <h4 className="text-[14px] font-bold text-white uppercase tracking-wider">3. Threat Analytics & Export</h4>
                 <p className="text-slate-500 text-[12px] leading-relaxed">Segregates results into risk bounds, identifies major historical causes (like deforestation or industrial transitions), and compiles downloadable PDF reports.</p>
               </div>
-            </div>
+            </motion.div>
           </div>
         </motion.div>
 
@@ -201,30 +201,30 @@ const Landing = () => {
             <p className="text-[#1a4b6c] max-w-xl text-[13px] font-medium mt-2">Integrating advanced deep learning architectures and real-time streaming platforms for next-generation forecasting.</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-gradient-to-b from-[#050c18] to-[#030710] border border-sky-900/10 rounded-[24px] p-6 shadow-xl space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 perspective-[1000px]">
+            <motion.div whileHover={{ scale: 1.03, y: -6, rotateX: 2, rotateY: -2, boxShadow: "0 20px 40px -12px rgba(14, 165, 233, 0.12)" }} className="bg-gradient-to-b from-[#050c18] to-[#030710] border border-sky-900/10 rounded-[24px] p-6 shadow-xl space-y-4 cursor-pointer transition-colors duration-300 hover:border-sky-900/40">
               <div className="w-10 h-10 rounded-xl border border-sky-900/40 bg-[#081326] flex items-center justify-center">
                 <Layers className="w-[16px] h-[16px] text-[#0ea5e9]" />
               </div>
               <h4 className="text-[15px] font-bold text-white uppercase tracking-wider">Deep Learning Sequence Models</h4>
               <p className="text-slate-500 text-[12px] leading-relaxed">Transitioning to deep learning time-series models (like LSTMs or Temporal Fusion Transformers) to capture complex seasonal climate cycles and decadal changes.</p>
-            </div>
+            </motion.div>
 
-            <div className="bg-gradient-to-b from-[#050c18] to-[#030710] border border-sky-900/10 rounded-[24px] p-6 shadow-xl space-y-4">
+            <motion.div whileHover={{ scale: 1.03, y: -6, rotateX: 2, rotateY: 0, boxShadow: "0 20px 40px -12px rgba(14, 165, 233, 0.12)" }} className="bg-gradient-to-b from-[#050c18] to-[#030710] border border-sky-900/10 rounded-[24px] p-6 shadow-xl space-y-4 cursor-pointer transition-colors duration-300 hover:border-sky-900/40">
               <div className="w-10 h-10 rounded-xl border border-sky-900/40 bg-[#081326] flex items-center justify-center">
                 <Sliders className="w-[16px] h-[16px] text-[#0ea5e9]" />
               </div>
               <h4 className="text-[15px] font-bold text-white uppercase tracking-wider">Policy Sandbox Simulations</h4>
               <p className="text-slate-500 text-[12px] leading-relaxed">Enabling users to simulate policy interventions (e.g. reforestation rates, tax sliders) to see real-time impact on predicted future emission trajectories.</p>
-            </div>
+            </motion.div>
 
-            <div className="bg-gradient-to-b from-[#050c18] to-[#030710] border border-sky-900/10 rounded-[24px] p-6 shadow-xl space-y-4">
+            <motion.div whileHover={{ scale: 1.03, y: -6, rotateX: 2, rotateY: 2, boxShadow: "0 20px 40px -12px rgba(14, 165, 233, 0.12)" }} className="bg-gradient-to-b from-[#050c18] to-[#030710] border border-sky-900/10 rounded-[24px] p-6 shadow-xl space-y-4 cursor-pointer transition-colors duration-300 hover:border-sky-900/40">
               <div className="w-10 h-10 rounded-xl border border-sky-900/40 bg-[#081326] flex items-center justify-center">
                 <Radio className="w-[16px] h-[16px] text-[#0ea5e9]" />
               </div>
               <h4 className="text-[15px] font-bold text-white uppercase tracking-wider">Satellite Observation Feeds</h4>
               <p className="text-slate-500 text-[12px] leading-relaxed">Integrating live feeds from ESA Sentinel-5P and NASA OCO-2 to overlay satellite readings against predictions, providing real-time data validation.</p>
-            </div>
+            </motion.div>
           </div>
         </motion.div>
 
