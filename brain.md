@@ -79,7 +79,8 @@ Capstone Project second/
 │   ├── package.json                    # npm dependencies
 │   ├── vite.config.js                  # Vite config
 │   ├── tailwind.config.js              # Tailwind config
-│   └── postcss.config.js              # PostCSS config
+│   ├── postcss.config.js              # PostCSS config
+│   └── vercel.json                     # Vercel rewrite configuration for client-side routing
 │
 ├── research_and_utilities/             # 📂 Reorganized research, notebooks, and utility tools
 │   ├── notebooks/
@@ -332,4 +333,7 @@ python retrain.py
 15. **PDF Export Variable Fix** — Fixed a ReferenceError in `downloadPDF` inside `Predictor.jsx` where the undefined variable `trend2031` was referenced instead of the correct `trendVariable`.
 
 16. **Scroll to Top on Route Change** — Added a `useEffect` inside `AnimatedRoutes` (in `App.jsx`) to scroll the window to the top (`window.scrollTo(0, 0)`) when the route path changes, preventing the page from loading scrolled-down when transitioning between pages.
+
+17. **Vercel Client-Side Routing Refresh Fix** — Added `frontend/vercel.json` with a rewrite rule to redirect all routes to `index.html`. This prevents Vercel from returning a `404: NOT_FOUND` error when refreshing a subpage like `/predict`.
+
 
